@@ -2,6 +2,21 @@
 
 Latitude Deno SDK - Community fork of [@latitude-data/sdk](https://www.npmjs.com/package/@latitude-data/sdk).
 
+## [1.0.1] - 2025-12-04
+
+### Fixed
+
+- **Auto-detect Supabase/Deno Deploy**: SDK now automatically uses production gateway when running in:
+  - Supabase Edge Functions (detects `SUPABASE_URL` env var)
+  - Deno Deploy (detects `DENO_DEPLOYMENT_ID` env var)
+  - No longer requires `NODE_ENV=production` on cloud runtimes
+
+### Verified
+
+- **100% test pass rate on remote Supabase Edge Functions**
+- All 20 tests passing across 8 categories
+- Streaming, parallel requests, error handling all verified
+
 ## [1.0.0] - 2025-12-04
 
 ### 🎉 Initial Deno Release

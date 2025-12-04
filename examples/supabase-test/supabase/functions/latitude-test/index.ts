@@ -2,7 +2,7 @@
  * Latitude Deno SDK - Comprehensive Test Suite
  * Tests ALL SDK functionality with advanced streaming examples
  */
-import { Latitude } from 'jsr:@yigitkonur/latitude-deno-sdk@1.0.0'
+import { Latitude } from 'jsr:@yigitkonur/latitude-deno-sdk@1.0.1'
 
 const LATITUDE_API_KEY = '1211393d-9773-4ab1-91ab-ca418e340dbc'
 const LATITUDE_PROJECT_ID = 28196
