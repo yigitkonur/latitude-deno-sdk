@@ -1,6 +1,6 @@
 {
   "name": "@yigitkonur/latitude-deno-sdk",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Latitude Deno SDK - Community fork of the official Node.js SDK, rebuilt for Deno and Supabase Edge Functions",
   "license": "MIT",
   "exports": "./src/mod.ts",
@@ -37,6 +37,13 @@
     "proseWrap": "preserve"
   },
   "lint": {
+    "include": [
+      "src/"
+    ],
+    "exclude": [
+      "examples/",
+      "scripts/"
+    ],
     "rules": {
       "tags": [
         "recommended",
