@@ -1,7 +1,7 @@
 import { getOpenAIResponseTools } from './openai/getFunctionTools.ts';
-import { ToolInputMap } from './types.ts';
+import type { ToolInputMap } from './types.ts';
 import type { Config } from '../../constants/index.ts';
-import { Adapters, ProviderAdapter } from 'promptl-ai';
+import { Adapters, type ProviderAdapter } from 'promptl-ai';
 import { getAIProviderTools } from './getProviderTools.ts';
 
 const ADAPTERS_WITH_SNAKE_CASE = [

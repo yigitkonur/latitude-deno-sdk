@@ -1,18 +1,18 @@
 import {
-  AssertedStreamType,
+  type AssertedStreamType,
   type ChainEventDto,
-  DocumentLog,
+  type DocumentLog,
   Providers,
-  PublicManualEvaluationResultV2,
+  type PublicManualEvaluationResultV2,
   type ToolCallResponse,
-  ToolRequest,
+  type ToolRequest,
 } from './constants/index.ts';
-import { type Message, type MessageRole, type ToolCall } from './constants/index.ts';
+import type { Message, MessageRole, ToolCall } from './constants/index.ts';
 
 import env from './env/index.ts';
-import { GatewayApiConfig, RouteResolver } from './utils/index.ts';
+import { type GatewayApiConfig, RouteResolver } from './utils/index.ts';
 import { backgroundRun } from './utils/backgroundRun.ts';
-import { ApiErrorCodes, ApiErrorJsonResponse, LatitudeApiError } from './utils/errors.ts';
+import { ApiErrorCodes, type ApiErrorJsonResponse, LatitudeApiError } from './utils/errors.ts';
 import { makeRequest } from './utils/request.ts';
 import { streamAttach } from './utils/streamAttach.ts';
 import { streamChat } from './utils/streamChat.ts';
@@ -21,35 +21,35 @@ import { syncAttach } from './utils/syncAttach.ts';
 import { syncChat } from './utils/syncChat.ts';
 import { syncRun } from './utils/syncRun.ts';
 import {
-  AttachRunOptions,
-  ChatOptions,
-  GenerationJob,
-  GenerationResponse,
-  GetOrCreatePromptOptions,
-  GetPromptOptions,
+  type AttachRunOptions,
+  type ChatOptions,
+  type GenerationJob,
+  type GenerationResponse,
+  type GetOrCreatePromptOptions,
+  type GetPromptOptions,
   HandlerType,
   LogSources,
-  Project,
-  Prompt,
-  RenderChainOptions,
-  RenderPromptOptions,
-  RenderToolCallDetails,
-  RenderToolCalledFn,
-  RunPromptOptions,
-  RunPromptResult,
-  SDKOptions,
-  ToolHandler,
-  ToolSpec,
-  Version,
+  type Project,
+  type Prompt,
+  type RenderChainOptions,
+  type RenderPromptOptions,
+  type RenderToolCallDetails,
+  type RenderToolCalledFn,
+  type RunPromptOptions,
+  type RunPromptResult,
+  type SDKOptions,
+  type ToolHandler,
+  type ToolSpec,
+  type Version,
 } from './utils/types.ts';
 import {
-  AdapterMessageType,
+  type AdapterMessageType,
   Chain,
-  Config,
+  type Config,
   ContentType,
   type Message as PromptlMessage,
   MessageRole as PromptlMessageRole,
-  ProviderAdapter,
+  type ProviderAdapter,
   render,
   type ToolCallContent,
 } from 'promptl-ai';
@@ -316,7 +316,7 @@ class Latitude {
      */
     run: <
       S extends AssertedStreamType = 'text',
-      Tools extends ToolSpec = {},
+      Tools extends ToolSpec = Record<string, never>,
       Background extends boolean = false,
     >(
       path: string,
@@ -332,7 +332,7 @@ class Latitude {
      * @param args - Optional chat configuration
      * @returns The generation response
      */
-    chat: <S extends AssertedStreamType = 'text', Tools extends ToolSpec = {}>(
+    chat: <S extends AssertedStreamType = 'text', Tools extends ToolSpec = Record<string, never>>(
       uuid: string,
       messages: Message[],
       args?: Omit<ChatOptions<Tools, S>, 'messages'>,
@@ -386,7 +386,7 @@ class Latitude {
      */
     attach: <
       S extends AssertedStreamType = 'text',
-      Tools extends ToolSpec = {},
+      Tools extends ToolSpec = Record<string, never>,
     >(
       uuid: string,
       args?: AttachRunOptions<Tools, S>,
@@ -717,9 +717,9 @@ class Latitude {
     return (await response.json()) as Prompt;
   }
 
-  private async runPrompt<
+  private runPrompt<
     S extends AssertedStreamType = 'text',
-    Tools extends ToolSpec = {},
+    Tools extends ToolSpec = Record<string, never>,
     Background extends boolean = false,
   >(
     path: string,
@@ -736,24 +736,28 @@ class Latitude {
     };
 
     if (_options.background) {
-      return backgroundRun<Tools, S>(path, _options) as unknown as RunPromptResult<S, Background>; // prettier-ignore
+      return backgroundRun<Tools, S>(path, _options) as unknown as Promise<
+        RunPromptResult<S, Background>
+      >; // prettier-ignore
     }
 
     if (_options.stream) {
-      return streamRun<Tools, S>(path, _options) as unknown as RunPromptResult<S, Background>; // prettier-ignore
+      return streamRun<Tools, S>(path, _options) as unknown as Promise<
+        RunPromptResult<S, Background>
+      >; // prettier-ignore
     }
 
-    return syncRun<Tools, S>(path, _options) as unknown as RunPromptResult<S, Background>; // prettier-ignore
+    return syncRun<Tools, S>(path, _options) as unknown as Promise<RunPromptResult<S, Background>>; // prettier-ignore
   }
 
-  private async chat<
+  private chat<
     S extends AssertedStreamType = 'text',
-    Tools extends ToolSpec = {},
+    Tools extends ToolSpec = Record<string, never>,
   >(
     uuid: string,
     messages: Message[],
     options?: Omit<ChatOptions<Tools, S>, 'messages'>,
-  ) {
+  ): Promise<GenerationResponse<S> | undefined> {
     // Note: options is optional and messages is omitted to maintain backwards compatibility
     const _options = {
       ...(options || {}),
@@ -771,10 +775,13 @@ class Latitude {
     return syncChat<Tools, S>(uuid, _options);
   }
 
-  private async attachRun<
+  private attachRun<
     S extends AssertedStreamType = 'text',
-    Tools extends ToolSpec = {},
-  >(uuid: string, options?: AttachRunOptions<Tools, S>) {
+    Tools extends ToolSpec = Record<string, never>,
+  >(
+    uuid: string,
+    options?: AttachRunOptions<Tools, S>,
+  ): Promise<GenerationResponse<S> | undefined> {
     const _options = {
       ...(options || {}),
       stream: options?.stream ?? true, // Note: making stream the default
@@ -1030,7 +1037,7 @@ class Latitude {
     }
   }
 
-  private async handleToolRequests<
+  private handleToolRequests<
     M extends AdapterMessageType = PromptlMessage,
   >({
     toolRequests,
@@ -1288,7 +1295,7 @@ export { LatitudeApiError };
 export { LogSources };
 
 /** Enum of message roles (system, user, assistant, tool). */
-export { MessageRole };
+export type { MessageRole };
 
 /** Provider adapters from promptl-ai. */
 export { Adapters } from 'promptl-ai';

@@ -1,4 +1,4 @@
-import { OpenAIToolList, ToolDefinition } from '../../constants/index.ts';
+import type { OpenAIToolList, ToolDefinition } from '../../constants/index.ts';
 
 export type ClientTool = {
   [key: string]: ToolDefinition;

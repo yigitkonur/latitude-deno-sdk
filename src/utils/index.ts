@@ -7,20 +7,20 @@
  */
 
 import {
-  AnnotateUrlParams,
-  AttachRunUrlParams,
-  ChatUrlParams,
-  CreateVersionUrlParams,
-  GetAllDocumentsParams,
-  GetAllVersionsUrlParams,
-  GetDocumentUrlParams,
-  GetOrCreateDocumentUrlParams,
-  GetversionUrlParams,
+  type AnnotateUrlParams,
+  type AttachRunUrlParams,
+  type ChatUrlParams,
+  type CreateVersionUrlParams,
+  type GetAllDocumentsParams,
+  type GetAllVersionsUrlParams,
+  type GetDocumentUrlParams,
+  type GetOrCreateDocumentUrlParams,
+  type GetversionUrlParams,
   HandlerType,
-  PushVersionUrlParams,
-  RunDocumentUrlParams,
-  StopRunUrlParams,
-  UrlParams,
+  type PushVersionUrlParams,
+  type RunDocumentUrlParams,
+  type StopRunUrlParams,
+  type UrlParams,
 } from './types.ts';
 import { HEAD_COMMIT } from '../constants/index.ts';
 
@@ -163,25 +163,50 @@ export class RouteResolver {
     }
   }
 
-  private tools() {
+  private tools(): { results: string } {
     const base = `${this.baseUrl}/tools`;
     return {
       results: `${base}/results`,
     };
   }
 
-  private conversations() {
+  private conversations(): {
+    chat: (uuid: string) => string;
+    stop: (uuid: string) => string;
+    attach: (uuid: string) => string;
+    annotate: (uuid: string, evaluationUuid: string) => string;
+  } {
     const base = `${this.baseUrl}/conversations`;
     return {
-      chat: (uuid: string) => `${base}/${uuid}/chat`,
-      stop: (uuid: string) => `${base}/${uuid}/stop`,
-      attach: (uuid: string) => `${base}/${uuid}/attach`,
-      annotate: (uuid: string, evaluationUuid: string) =>
+      chat: (uuid: string): string => `${base}/${uuid}/chat`,
+      stop: (uuid: string): string => `${base}/${uuid}/stop`,
+      attach: (uuid: string): string => `${base}/${uuid}/attach`,
+      annotate: (uuid: string, evaluationUuid: string): string =>
         `${base}/${uuid}/evaluations/${evaluationUuid}/annotate`,
     };
   }
 
-  private get projects() {
+  private get projects(): {
+    root: string;
+    project: (projectId: number) => {
+      root: string;
+      documents: string;
+      versions: {
+        root: string;
+        version: (versionUuid: string) => {
+          root: string;
+          push: string;
+          documents: {
+            root: string;
+            document: (path: string) => string;
+            getOrCreate: string;
+            run: string;
+            logs: string;
+          };
+        };
+      };
+    };
+  } {
     const base = `${this.baseUrl}/projects`;
     return {
       root: base,
@@ -195,7 +220,7 @@ export class RouteResolver {
             push: `${this.baseUrl}/projects/${projectId}/versions/${versionUuid}/push`,
             documents: {
               root: `${this.baseUrl}/projects/${projectId}/versions/${versionUuid}/documents`,
-              document: (path: string) =>
+              document: (path: string): string =>
                 `${this.baseUrl}/projects/${projectId}/versions/${versionUuid}/documents/${path}`,
               getOrCreate:
                 `${this.baseUrl}/projects/${projectId}/versions/${versionUuid}/documents/get-or-create`,
@@ -208,7 +233,7 @@ export class RouteResolver {
     };
   }
 
-  private get baseUrl() {
+  private get baseUrl(): string {
     return `${this.basePath}/api/${this.apiVersion}`;
   }
 }

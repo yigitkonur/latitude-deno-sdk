@@ -1,4 +1,4 @@
-import { BodyParams, HandlerType, SDKOptions, UrlParams } from './types.ts';
+import type { BodyParams, HandlerType, SDKOptions, UrlParams } from './types.ts';
 import { SDK_VERSION } from './version.ts';
 
 // Native fetch is used - no node-fetch needed in Deno

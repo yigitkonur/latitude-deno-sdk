@@ -1,7 +1,13 @@
 import { LatitudeApiError } from './errors.ts';
 import { makeRequest } from './request.ts';
-import { GenerationJob, HandlerType, RunPromptOptions, SDKOptions, ToolSpec } from './types.ts';
-import { ApiErrorCodes, AssertedStreamType, LatitudeErrorCodes } from '../constants/index.ts';
+import {
+  type GenerationJob,
+  HandlerType,
+  type RunPromptOptions,
+  type SDKOptions,
+  type ToolSpec,
+} from './types.ts';
+import { ApiErrorCodes, type AssertedStreamType, LatitudeErrorCodes } from '../constants/index.ts';
 import type { ApiErrorJsonResponse } from '../constants/index.ts';
 import { waitForTools } from './streamRun.ts';
 

@@ -2,17 +2,17 @@ import { LatitudeApiError } from './errors.ts';
 import { handleStream } from './handleStream.ts';
 import { makeRequest } from './request.ts';
 import {
-  GenerationResponse,
+  type GenerationResponse,
   HandlerType,
-  RunPromptOptions,
-  SDKOptions,
-  ToolSpec,
+  type RunPromptOptions,
+  type SDKOptions,
+  type ToolSpec,
 } from './types.ts';
 import {
   ApiErrorCodes,
-  AssertedStreamType,
+  type AssertedStreamType,
   LatitudeErrorCodes,
-  ProviderData,
+  type ProviderData,
 } from '../constants/index.ts';
 import type { ApiErrorJsonResponse } from '../constants/index.ts';
 

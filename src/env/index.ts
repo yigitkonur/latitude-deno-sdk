@@ -1,4 +1,10 @@
-function generateEnv() {
+type SdkEnv = {
+  GATEWAY_HOSTNAME: string;
+  GATEWAY_SSL: boolean;
+  GATEWAY_PORT?: number;
+};
+
+function generateEnv(): SdkEnv {
   // Detect production environment:
   // 1. DENO_ENV or NODE_ENV set to 'production'
   // 2. Running in Supabase Edge Functions (SUPABASE_URL is set)
@@ -21,12 +27,6 @@ function generateEnv() {
     GATEWAY_SSL: Deno.env.get('GATEWAY_SSL') === 'true' || defaultSsl,
   };
 }
-
-type SdkEnv = {
-  GATEWAY_HOSTNAME: string;
-  GATEWAY_SSL: boolean;
-  GATEWAY_PORT?: number;
-};
 
 let sdkEnv: SdkEnv;
 

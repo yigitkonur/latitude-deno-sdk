@@ -1,5 +1,5 @@
-import { Adapters, ProviderAdapter } from 'promptl-ai';
-import { ClientTool, ToolInputMap } from './types.ts';
+import { Adapters, type ProviderAdapter } from 'promptl-ai';
+import type { ClientTool, ToolInputMap } from './types.ts';
 import { getOpenAIResponsesBuiltinTools } from './openai/getOpenAIResponsesBuiltinTools.ts';
 
 /** Return type for provider tool extraction. */

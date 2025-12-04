@@ -2,13 +2,13 @@ import { LatitudeApiError } from './errors.ts';
 import { handleStream } from './handleStream.ts';
 import { makeRequest } from './request.ts';
 import {
-  AttachRunOptions,
-  GenerationResponse,
+  type AttachRunOptions,
+  type GenerationResponse,
   HandlerType,
-  SDKOptions,
-  ToolSpec,
+  type SDKOptions,
+  type ToolSpec,
 } from './types.ts';
-import { ApiErrorCodes, AssertedStreamType } from '../constants/index.ts';
+import { ApiErrorCodes, type AssertedStreamType } from '../constants/index.ts';
 import type { ApiErrorJsonResponse } from '../constants/index.ts';
 import { handleToolCallFactory } from './streamRun.ts';
 

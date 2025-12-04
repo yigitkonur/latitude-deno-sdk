@@ -2,14 +2,14 @@ import { LatitudeApiError } from './errors.ts';
 import { makeRequest } from './request.ts';
 import { waitForTools } from './streamRun.ts';
 import {
-  GenerationResponse,
+  type GenerationResponse,
   HandlerType,
-  RunPromptOptions,
-  RunSyncAPIResponse,
-  SDKOptions,
-  ToolSpec,
+  type RunPromptOptions,
+  type RunSyncAPIResponse,
+  type SDKOptions,
+  type ToolSpec,
 } from './types.ts';
-import { ApiErrorCodes, AssertedStreamType, LatitudeErrorCodes } from '../constants/index.ts';
+import { ApiErrorCodes, type AssertedStreamType, LatitudeErrorCodes } from '../constants/index.ts';
 import type { ApiErrorJsonResponse } from '../constants/index.ts';
 
 export async function syncRun<

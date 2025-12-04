@@ -1,14 +1,14 @@
 import { LatitudeApiError } from './errors.ts';
 import { makeRequest } from './request.ts';
 import {
-  AttachRunOptions,
-  GenerationResponse,
+  type AttachRunOptions,
+  type GenerationResponse,
   HandlerType,
-  RunSyncAPIResponse,
-  SDKOptions,
-  ToolSpec,
+  type RunSyncAPIResponse,
+  type SDKOptions,
+  type ToolSpec,
 } from './types.ts';
-import { ApiErrorCodes, AssertedStreamType } from '../constants/index.ts';
+import { ApiErrorCodes, type AssertedStreamType } from '../constants/index.ts';
 import type { ApiErrorJsonResponse } from '../constants/index.ts';
 
 export async function syncAttach<

@@ -1,8 +1,13 @@
 import { LatitudeApiError } from './errors.ts';
 import { handleStream } from './handleStream.ts';
 import { makeRequest } from './request.ts';
-import { ChatOptionsWithSDKOptions, ChatSyncAPIResponse, HandlerType, ToolSpec } from './types.ts';
-import { ApiErrorCodes, AssertedStreamType } from '../constants/index.ts';
+import {
+  type ChatOptionsWithSDKOptions,
+  type ChatSyncAPIResponse,
+  HandlerType,
+  type ToolSpec,
+} from './types.ts';
+import { ApiErrorCodes, type AssertedStreamType } from '../constants/index.ts';
 import type { ApiErrorJsonResponse } from '../constants/index.ts';
 import { handleToolCallFactory, waitForTools } from './streamRun.ts';
 

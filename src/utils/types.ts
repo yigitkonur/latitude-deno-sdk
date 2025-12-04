@@ -20,15 +20,15 @@ export type HandlerConfig<U, B> = {
   BodyParams: B;
 };
 
-import { RouteResolver } from './index.ts';
-import { LatitudeApiError } from './errors.ts';
-import {
+import type { RouteResolver } from './index.ts';
+import type { LatitudeApiError } from './errors.ts';
+import type {
   AssertedStreamType,
   ChainCallResponseDto,
   ChainEventDto,
-  type ChatSyncAPIResponse,
+  ChatSyncAPIResponse,
   Providers,
-  type RunSyncAPIResponse,
+  RunSyncAPIResponse,
   StreamEventTypes,
 } from '../constants/index.ts';
 
@@ -38,7 +38,7 @@ export type { ChatSyncAPIResponse };
 export type { RunSyncAPIResponse };
 
 import type { Config, Message, ToolCall } from '../constants/index.ts';
-import { AdapterMessageType, type Message as PromptlMessage, ProviderAdapter } from 'promptl-ai';
+import type { AdapterMessageType, Message as PromptlMessage, ProviderAdapter } from 'promptl-ai';
 
 /**
  * Chain event wrapper containing event data and type.

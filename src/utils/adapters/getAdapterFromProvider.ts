@@ -1,5 +1,5 @@
 import { Providers } from '../../constants/index.ts';
-import { AdapterMessageType, Adapters, Message, ProviderAdapter } from 'promptl-ai';
+import { type AdapterMessageType, Adapters, type Message, type ProviderAdapter } from 'promptl-ai';
 
 export function getPromptlAdapterFromProvider<
   M extends AdapterMessageType = Message,

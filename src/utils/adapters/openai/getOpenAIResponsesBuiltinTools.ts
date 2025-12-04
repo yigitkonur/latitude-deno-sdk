@@ -1,12 +1,12 @@
-import { ClientTool, ToolInputMap } from '../types.ts';
+import type { ClientTool, ToolInputMap } from '../types.ts';
 import {
   ComputerCallSchema,
   FileSearchToolSchema,
-  OpenAIToolList,
+  type OpenAIToolList,
   WebSearchToolSchema,
 } from '../../../constants/index.ts';
 
-import { ProviderToolsResult } from '../getProviderTools.ts';
+import type { ProviderToolsResult } from '../getProviderTools.ts';
 
 export function getOpenAIResponsesBuiltinTools({
   tools,

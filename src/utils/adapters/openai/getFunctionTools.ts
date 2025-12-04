@@ -1,4 +1,4 @@
-import { ProviderToolsResult } from '../getProviderTools.ts';
+import type { ProviderToolsResult } from '../getProviderTools.ts';
 
 /** OpenAI function tool definition. */
 export type OpenAIFunctionTool = {

@@ -8,9 +8,9 @@
 
 import {
   ApiErrorCodes,
-  ApiErrorJsonResponse,
-  ApiResponseCode,
-  DbErrorRef,
+  type ApiErrorJsonResponse,
+  type ApiResponseCode,
+  type DbErrorRef,
   LatitudeErrorCodes,
   RunErrorCodes,
 } from './errorConstants.ts';
@@ -23,7 +23,7 @@ function getErrorMessage({
   status: number;
   message: string;
   errorCode: ApiResponseCode;
-}) {
+}): string {
   const httpExeception = ApiErrorCodes.HTTPException;
   const internalServerError = ApiErrorCodes.InternalServerError;
   const isUnexpectedError = errorCode === httpExeception || errorCode === internalServerError;

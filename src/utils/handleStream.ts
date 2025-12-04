@@ -110,15 +110,14 @@ export async function handleStream<S extends AssertedStreamType = 'text'>({
       reader.releaseLock();
     } catch (e) {
       // Ignore errors during cleanup
-      console.warn(
-        'Error releasing stream reader lock:',
-        e instanceof Error ? e.message : String(e),
-      );
+      // Silently ignore errors during cleanup - this is expected behavior
+      // when the stream is already released or in an invalid state
+      void (e instanceof Error ? e.message : String(e));
     }
   }
 }
 
-function parseJSON(line: string) {
+function parseJSON(line: string): ProviderData | LatitudeEventData | undefined {
   try {
     return JSON.parse(line) as ProviderData | LatitudeEventData;
   } catch {
