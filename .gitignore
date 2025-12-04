@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Deno
+deno.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build
+dist/
+node_modules/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test artifacts
+coverage/
+.nyc_output/
