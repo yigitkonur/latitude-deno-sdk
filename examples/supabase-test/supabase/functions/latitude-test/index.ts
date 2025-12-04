@@ -2,7 +2,7 @@
  * Latitude Deno SDK - Comprehensive Test Suite
  * Tests ALL SDK functionality with advanced streaming examples
  */
-import { Latitude } from 'jsr:@yigitkonur/latitude-deno-sdk@1.0.6';
+import { Latitude, MessageRole } from 'jsr:@yigitkonur/latitude-deno-sdk@1.0.7';
 
 // Set these environment variables or replace with your credentials
 const LATITUDE_API_KEY = Deno.env.get('LATITUDE_API_KEY') || 'your-api-key-here';
@@ -284,7 +284,7 @@ Deno.serve(async (req) => {
             try {
               const chat = await latitude.prompts.chat(initial.uuid, [
                 {
-                  role: 'user' as const,
+                  role: MessageRole.user,
                   content: [{
                     type: 'text',
                     text: 'Add another profile: John Doe - CEO at Startup',
@@ -370,19 +370,11 @@ Deno.serve(async (req) => {
       if (action === 'all' || action === 'logs.create') {
         tests.push(
           await runTest('logs', 'logs.create()', async () => {
+            // Note: logs.create expects simpler message format
             const log = await latitude.logs.create('extract-linkedin-from-serp', [
-              {
-                role: 'user' as const,
-                content: [{ type: 'text', text: 'Test log from Deno SDK comprehensive test' }],
-              },
-              {
-                role: 'assistant' as const,
-                content: [{
-                  type: 'text',
-                  text: '[{"full_name": "Test User", "entity_title": "Test Company"}]',
-                }],
-              },
-            ]);
+              { role: 'user', content: 'Test log from Deno SDK' },
+              { role: 'assistant', content: '[{"full_name": "Test"}]' },
+            ] as Parameters<typeof latitude.logs.create>[1]);
             return { created: true, uuid: log.uuid };
           }),
         );

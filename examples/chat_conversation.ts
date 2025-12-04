@@ -37,7 +37,7 @@ if (initial?.uuid) {
     const followUp = await latitude.prompts.chat(initial.uuid, [
       {
         role: MessageRole.user,
-        content: [{ type: 'text' as const, text: 'How does it compare to JavaScript?' }],
+        content: [{ type: 'text', text: 'How does it compare to JavaScript?' }],
       },
     ]);
 
@@ -85,8 +85,8 @@ async function conductConversation(
       const response = await latitude.prompts.chat(conversationUuid, [
         {
           role: MessageRole.user,
-          content: [{ type: 'text' as const, text: question }],
-        } as never,
+          content: [{ type: 'text', text: question }],
+        },
       ]);
 
       history.push({ role: 'user', content: question });
@@ -151,8 +151,8 @@ if (chatUuid) {
       chatUuid,
       [{
         role: MessageRole.user,
-        content: [{ type: 'text' as const, text: 'How does it differ from Node.js?' }],
-      } as never],
+        content: [{ type: 'text', text: 'How does it differ from Node.js?' }],
+      }],
       {
         stream: true,
         onEvent: () => {
@@ -208,8 +208,8 @@ class ConversationManager {
     const result = await this.latitude.prompts.chat(uuid, [
       {
         role: MessageRole.user,
-        content: [{ type: 'text' as const, text: message }],
-      } as never,
+        content: [{ type: 'text', text: message }],
+      },
     ]);
 
     return {
@@ -280,8 +280,8 @@ async function simulateInteractiveChat(
         const result = await latitude.prompts.chat(uuid, [
           {
             role: MessageRole.user,
-            content: [{ type: 'text' as const, text: exchange.user }],
-          } as never,
+            content: [{ type: 'text', text: exchange.user }],
+          },
         ]);
         response = result?.response?.text;
       } catch {
