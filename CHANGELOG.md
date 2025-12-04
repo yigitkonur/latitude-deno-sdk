@@ -2,6 +2,14 @@
 
 Latitude Deno SDK - Community fork of [@latitude-data/sdk](https://www.npmjs.com/package/@latitude-data/sdk).
 
+## [1.0.2] - 2025-12-04
+
+### Documentation
+
+- **Comprehensive README**: 9 practical examples covering all use cases
+- **API Reference**: Full method documentation with types
+- **Live Tests**: Links to running test suite on Supabase
+
 ## [1.0.1] - 2025-12-04
 
 ### Fixed
