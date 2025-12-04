@@ -78,7 +78,6 @@ export class RouteResolver {
     this.apiVersion = apiVersion;
   }
 
-  // TODO: FIXME: This can be done without asserting types
   resolve<T extends HandlerType>({ handler, params }: ResolveParams<T>): string {
     switch (handler) {
       case HandlerType.GetDocument: {

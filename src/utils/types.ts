@@ -7,9 +7,6 @@
  * @module
  */
 
-// TODO: Right now it takes a lot of work to add a simple new route to this file
-// We should refactor this to make it easier to add new routes
-
 /**
  * Generic handler configuration type mapping URL and body parameters.
  *

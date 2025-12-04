@@ -278,3 +278,29 @@ curl "https://dugggxrwvfakrzmnlfif.supabase.co/functions/v1/latitude-test?action
 ## License
 
 MIT
+
+---
+
+## Development
+
+### Versioning & Publishing
+
+This package uses **automated publishing** to JSR via GitHub Actions.
+
+1. **Make changes** to the codebase.
+2. **Bump version** using helper tasks (updates `deno.json` and creates commit):
+   ```bash
+   deno task version:patch  # 1.0.0 -> 1.0.1
+   deno task version:minor  # 1.0.0 -> 1.1.0
+   deno task version:major  # 1.0.0 -> 2.0.0
+   ```
+3. **Push to main**:
+   ```bash
+   git push origin main
+   ```
+
+The workflow will automatically:
+- Check if the version is already on JSR (skips if so).
+- Verify types, lint, and format.
+- Publish to JSR using OIDC authentication.
+
