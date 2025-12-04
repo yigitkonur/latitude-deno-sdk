@@ -1,8 +1,17 @@
 function generateEnv() {
-  // Support both DENO_ENV and NODE_ENV for compatibility
-  const isProd =
+  // Detect production environment:
+  // 1. DENO_ENV or NODE_ENV set to 'production'
+  // 2. Running in Supabase Edge Functions (SUPABASE_URL is set)
+  // 3. Running in Deno Deploy (DENO_DEPLOYMENT_ID is set)
+  const isSupabase = !!Deno.env.get('SUPABASE_URL')
+  const isDenoDeploy = !!Deno.env.get('DENO_DEPLOYMENT_ID')
+  const isExplicitProd =
     Deno.env.get('DENO_ENV') === 'production' ||
     Deno.env.get('NODE_ENV') === 'production'
+  
+  // Default to production if in any cloud runtime or explicitly set
+  const isProd = isExplicitProd || isSupabase || isDenoDeploy
+  
   const defaultHostname = isProd ? 'gateway.latitude.so' : 'localhost'
   const defaultPort = !isProd ? 8787 : undefined
   const defaultSsl = isProd ? true : false
