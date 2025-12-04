@@ -1,3 +1,11 @@
+/**
+ * Route resolution utilities for the Latitude SDK.
+ *
+ * This module provides URL resolution for API endpoints.
+ *
+ * @module
+ */
+
 import {
   AnnotateUrlParams,
   AttachRunUrlParams,
@@ -16,15 +24,43 @@ import {
 } from './types.ts'
 import { HEAD_COMMIT } from '../constants/index.ts'
 
+/** Parameters for resolving a route. */
 type ResolveParams<T extends HandlerType> = {
+  /** The handler type to resolve. */
   handler: T
+  /** Optional URL parameters. */
   params?: UrlParams<T>
 }
+
+/**
+ * Configuration for the API gateway.
+ *
+ * @example
+ * ```ts
+ * const gateway: GatewayApiConfig = {
+ *   host: "gateway.latitude.so",
+ *   port: undefined,
+ *   ssl: true,
+ * };
+ * ```
+ */
 export type GatewayApiConfig = {
+  /** Gateway hostname. */
   host: string
+  /** Gateway port (undefined for default). */
   port: number | undefined
+  /** Whether to use SSL/TLS. */
   ssl: boolean
 }
+
+/**
+ * Resolves API routes based on handler type and parameters.
+ *
+ * This class is used internally to build API endpoint URLs.
+ *
+ * @class
+ * @internal
+ */
 export class RouteResolver {
   private basePath: string
   private apiVersion: string
@@ -45,7 +81,7 @@ export class RouteResolver {
   }
 
   // TODO: FIXME: This can be done without asserting types
-  resolve<T extends HandlerType>({ handler, params }: ResolveParams<T>) {
+  resolve<T extends HandlerType>({ handler, params }: ResolveParams<T>): string {
     switch (handler) {
       case HandlerType.GetDocument: {
         const p = params as GetDocumentUrlParams

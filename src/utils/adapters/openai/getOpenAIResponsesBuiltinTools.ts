@@ -6,11 +6,13 @@ import {
   WebSearchToolSchema,
 } from '../../../constants/index.ts'
 
+import { ProviderToolsResult } from '../getProviderTools.ts'
+
 export function getOpenAIResponsesBuiltinTools({
   tools,
 }: {
   tools: ToolInputMap
-}) {
+}): ProviderToolsResult {
   return Object.entries(tools).reduce(
     (acc, [name, definition]) => {
       if (name === 'openai') {

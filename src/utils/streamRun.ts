@@ -15,6 +15,8 @@ import {
 } from '../constants/index.ts'
 import type { ApiErrorJsonResponse } from '../constants/index.ts'
 
+import { GenerationResponse } from './types.ts'
+
 export async function streamRun<
   Tools extends ToolSpec,
   S extends AssertedStreamType = 'text',
@@ -34,7 +36,7 @@ export async function streamRun<
   }: RunPromptOptions<Tools, S, false> & {
     options: SDKOptions
   },
-) {
+): Promise<GenerationResponse<S> | undefined> {
   projectId = projectId ?? options.projectId
 
   if (!projectId) {
@@ -119,8 +121,8 @@ export function handleToolCallFactory<T extends ToolSpec>({
 }: {
   tools?: RunPromptOptions<T>['tools']
   options: SDKOptions
-}) {
-  return async (data: ProviderData) => {
+}): (data: ProviderData) => Promise<void> {
+  return async (data: ProviderData): Promise<void> => {
     if (data.type !== 'tool-call') return
 
     // Explicitly cast to the specific tool call type to satisfy TS
@@ -167,6 +169,6 @@ ${json.message}`
   }
 }
 
-export function waitForTools(tools?: Record<string, unknown>) {
+export function waitForTools(tools?: Record<string, unknown>): string[] {
   return Object.keys(tools ?? {})
 }

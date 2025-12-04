@@ -52,7 +52,7 @@ const SNAKE_CASE_CONFIGURATION_ATTRIBUTES: Record<string, string> = {
 export function adaptToolsConfig(
   tools: ToolInputMap | ToolInputMap[],
   adapter: ProviderAdapter<object>,
-) {
+): unknown {
   const { clientTools, providerTools } = getAIProviderTools({
     adapter: adapter,
     tools: Array.isArray(tools) ? Object.assign({}, ...tools) : tools,

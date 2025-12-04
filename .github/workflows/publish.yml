@@ -1,0 +1,52 @@
+# Publish to JSR with OIDC Authentication & SLSA Provenance
+#
+# This workflow publishes the package to JSR using GitHub's OIDC authentication.
+# No secrets or tokens are required - authentication is handled automatically.
+#
+# Prerequisites:
+# 1. Link your package to this GitHub repository at:
+#    https://jsr.io/@yigitkonur/latitude-deno-sdk/settings
+#
+# Triggers:
+# - Push to main branch (auto-publish if version changed)
+# - Version tags (v*)
+# - Manual workflow dispatch
+
+name: Publish to JSR
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write  # Required for OIDC authentication with JSR
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Verify types
+        run: deno task check
+
+      - name: Lint
+        run: deno lint src/
+
+      - name: Format check
+        run: deno fmt --check src/
+
+      - name: Publish to JSR
+        run: npx jsr publish

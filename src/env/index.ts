@@ -31,11 +31,13 @@ type SdkEnv = {
 
 let sdkEnv: SdkEnv
 
-function createEnv() {
+function createEnv(): SdkEnv {
   if (sdkEnv) return sdkEnv
 
   sdkEnv = generateEnv()
   return sdkEnv
 }
 
-export default createEnv()
+/** SDK environment configuration. */
+const env: SdkEnv = createEnv()
+export default env

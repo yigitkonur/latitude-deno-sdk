@@ -13,6 +13,8 @@ import type { ApiErrorJsonResponse } from '../constants/index.ts'
 import { waitForTools } from './streamRun.ts'
 import { AssertedStreamType } from '../constants/index.ts'
 
+import { GenerationResponse } from './types.ts'
+
 export async function syncChat<
   Tools extends ToolSpec,
   S extends AssertedStreamType = 'text',
@@ -25,7 +27,7 @@ export async function syncChat<
     onError,
     options,
   }: ChatOptionsWithSDKOptions<Tools, S>,
-) {
+): Promise<GenerationResponse<S> | undefined> {
   try {
     const response = await makeRequest({
       method: 'POST',

@@ -1,6 +1,11 @@
 /**
  * Latitude SDK Constants
- * Bundled from @latitude-data/constants for standalone Deno compatibility
+ *
+ * This module contains all constants, enums, and type definitions used throughout
+ * the Latitude SDK. These are bundled from @latitude-data/constants for standalone
+ * Deno compatibility.
+ *
+ * @module
  */
 
 import { z } from 'zod'
@@ -9,18 +14,35 @@ import { z } from 'zod'
 // ZOD SCHEMAS
 // ============================================================================
 
-export const WebSearchToolSchema = z.object({
+/** Zod schema for web search tool configuration. */
+export const WebSearchToolSchema: z.ZodObject<{
+  type: z.ZodEnum<['web_search', 'web_search_preview', 'web_search_preview_2025_03_11']>
+  web_search: z.ZodOptional<z.ZodObject<{ search_context_size: z.ZodOptional<z.ZodString> }>>
+  web_search_preview: z.ZodOptional<z.ZodObject<{ search_context_size: z.ZodOptional<z.ZodString> }>>
+}> = z.object({
   type: z.enum(['web_search', 'web_search_preview', 'web_search_preview_2025_03_11']),
   web_search: z.object({ search_context_size: z.string().optional() }).optional(),
   web_search_preview: z.object({ search_context_size: z.string().optional() }).optional(),
 })
 
-export const FileSearchToolSchema = z.object({
+/** Zod schema for file search tool configuration. */
+export const FileSearchToolSchema: z.ZodObject<{
+  type: z.ZodLiteral<'file_search'>
+  file_search: z.ZodOptional<z.ZodObject<{ max_num_results: z.ZodOptional<z.ZodNumber> }>>
+}> = z.object({
   type: z.literal('file_search'),
   file_search: z.object({ max_num_results: z.number().optional() }).optional(),
 })
 
-export const ComputerCallSchema = z.object({
+/** Zod schema for computer use tool configuration. */
+export const ComputerCallSchema: z.ZodObject<{
+  type: z.ZodLiteral<'computer_use_preview'>
+  computer_use_preview: z.ZodOptional<z.ZodObject<{
+    display_width: z.ZodOptional<z.ZodNumber>
+    display_height: z.ZodOptional<z.ZodNumber>
+    environment: z.ZodOptional<z.ZodString>
+  }>>
+}> = z.object({
   type: z.literal('computer_use_preview'),
   computer_use_preview: z.object({
     display_width: z.number().optional(),
@@ -33,8 +55,24 @@ export const ComputerCallSchema = z.object({
 // PROVIDERS
 // ============================================================================
 
-export const HEAD_COMMIT = 'live'
+/** The default commit identifier for the live/published version. */
+export const HEAD_COMMIT: string = 'live'
 
+/**
+ * Supported AI providers.
+ *
+ * @enum {string}
+ *
+ * @example
+ * ```ts
+ * import { Providers } from "@yigitkonur/latitude-deno-sdk";
+ *
+ * const prompt = await client.prompts.get("my-prompt");
+ * if (prompt.provider === Providers.OpenAI) {
+ *   console.log("Using OpenAI");
+ * }
+ * ```
+ */
 export enum Providers {
   OpenAI = 'openai',
   Anthropic = 'anthropic',
@@ -55,6 +93,11 @@ export enum Providers {
 // ERROR CODES
 // ============================================================================
 
+/**
+ * Latitude-specific error codes.
+ *
+ * @enum {string}
+ */
 export enum LatitudeErrorCodes {
   UnexpectedError = 'UnexpectedError',
   OverloadedError = 'OverloadedError',
@@ -70,6 +113,11 @@ export enum LatitudeErrorCodes {
   AbortedError = 'AbortedError',
 }
 
+/**
+ * Error codes specific to prompt execution.
+ *
+ * @enum {string}
+ */
 export enum RunErrorCodes {
   AIProviderConfigError = 'ai_provider_config_error',
   AIRunError = 'ai_run_error',
@@ -89,23 +137,40 @@ export enum RunErrorCodes {
   AbortError = 'abort_error',
 }
 
+/**
+ * General API error codes.
+ *
+ * @enum {string}
+ */
 export enum ApiErrorCodes {
+  /** HTTP exception occurred. */
   HTTPException = 'http_exception',
+  /** Internal server error. */
   InternalServerError = 'internal_server_error',
 }
 
+/** Union type of all possible API response error codes. */
 export type ApiResponseCode = RunErrorCodes | ApiErrorCodes | LatitudeErrorCodes
 
+/** Reference to a database entity related to an error. */
 export type DbErrorRef = {
+  /** UUID of the related entity. */
   entityUuid: string
+  /** Type of the related entity. */
   entityType: string
 }
 
+/** JSON response structure for API errors. */
 export type ApiErrorJsonResponse = {
+  /** Error name/type. */
   name: string
+  /** Human-readable error message. */
   message: string
+  /** Additional error details. */
   details: object
+  /** Machine-readable error code. */
   errorCode: ApiResponseCode
+  /** Optional database error reference. */
   dbErrorRef?: DbErrorRef
 }
 
@@ -113,6 +178,21 @@ export type ApiErrorJsonResponse = {
 // LEGACY COMPILER TYPES (Messages, Roles, etc.)
 // ============================================================================
 
+/**
+ * Roles for conversation messages.
+ *
+ * @enum {string}
+ *
+ * @example
+ * ```ts
+ * import { MessageRole } from "@yigitkonur/latitude-deno-sdk";
+ *
+ * const message = {
+ *   role: MessageRole.user,
+ *   content: [{ type: "text", text: "Hello!" }],
+ * };
+ * ```
+ */
 export enum MessageRole {
   system = 'system',
   user = 'user',
@@ -218,12 +298,24 @@ export type ToolCall = {
   arguments: Record<string, unknown>
 }
 
+/**
+ * Union type of all message types in a conversation.
+ *
+ * @example
+ * ```ts
+ * const messages: Message[] = [
+ *   { role: MessageRole.system, content: [{ type: "text", text: "You are helpful." }] },
+ *   { role: MessageRole.user, content: [{ type: "text", text: "Hello!" }] },
+ * ];
+ * ```
+ */
 export type Message =
   | AssistantMessage
   | SystemMessage
   | ToolMessage
   | UserMessage
 
+/** Configuration object for prompts and providers. */
 export type Config = Record<string, unknown>
 
 export type Conversation = {
@@ -293,8 +385,15 @@ export type ChainCallResponseDto<S extends AssertedStreamType = 'text'> =
       ? ChainStepObjectResponse<S>
       : never
 
+/**
+ * Types of streaming events.
+ *
+ * @enum {string}
+ */
 export enum StreamEventTypes {
+  /** Event from the Latitude platform. */
   Latitude = 'latitude-event',
+  /** Event from the AI provider. */
   Provider = 'provider-event',
 }
 
@@ -314,17 +413,33 @@ export type ProviderData =
 // CHAIN EVENT TYPES
 // ============================================================================
 
+/**
+ * Types of events during chain/prompt execution.
+ *
+ * @enum {string}
+ */
 export enum ChainEventTypes {
+  /** Chain execution completed successfully. */
   ChainCompleted = 'chain-completed',
+  /** An error occurred during chain execution. */
   ChainError = 'chain-error',
+  /** Chain execution started. */
   ChainStarted = 'chain-started',
+  /** Integration is waking up (cold start). */
   IntegrationWakingUp = 'integration-waking-up',
+  /** Provider call completed. */
   ProviderCompleted = 'provider-completed',
+  /** Provider call started. */
   ProviderStarted = 'provider-started',
+  /** A step in the chain completed. */
   StepCompleted = 'step-completed',
+  /** A step in the chain started. */
   StepStarted = 'step-started',
+  /** Tool execution completed. */
   ToolCompleted = 'tool-completed',
+  /** Tool returned a result. */
   ToolResult = 'tool-result',
+  /** Tool executions started. */
   ToolsStarted = 'tools-started',
 }
 
@@ -445,25 +560,40 @@ export type ChatSyncAPIResponse<S extends AssertedStreamType = 'text'> = RunSync
 // ADDITIONAL EXPORTS
 // ============================================================================
 
+/** Document log entry from the Latitude API. */
 export type DocumentLog = {
+  /** Unique log identifier. */
   uuid: string
+  /** Additional log properties. */
   [key: string]: unknown
 }
 
+/** Result of a manual evaluation. */
 export type PublicManualEvaluationResultV2 = {
+  /** Unique result identifier. */
   uuid: string
+  /** The evaluation score. */
   score: number
+  /** Additional result properties. */
   [key: string]: unknown
 }
 
+/** Request to execute a tool. */
 export type ToolRequest = {
+  /** Discriminator type. */
   type: 'tool-call'
+  /** Unique call identifier. */
   toolCallId: string
+  /** Name of the tool to call. */
   toolName: string
+  /** Arguments to pass to the tool. */
   toolArguments: Record<string, unknown>
 }
 
+/** Response from a tool execution. */
 export type ToolCallResponse = {
+  /** The call ID this response is for. */
   toolCallId: string
+  /** The tool execution result. */
   result: unknown
 }

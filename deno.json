@@ -1,6 +1,6 @@
 {
   "name": "@yigitkonur/latitude-deno-sdk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Latitude Deno SDK - Community fork of the official Node.js SDK, rebuilt for Deno and Supabase Edge Functions",
   "license": "MIT",
   "exports": "./src/mod.ts",
@@ -15,7 +15,8 @@
 
   "compilerOptions": {
     "strict": true,
-    "lib": ["deno.window", "esnext"]
+    "lib": ["deno.window", "esnext"],
+    "isolatedDeclarations": true
   },
 
   "tasks": {
@@ -38,7 +39,6 @@
       "exclude": [
         "no-explicit-any",
         "verbatim-module-syntax",
-        "no-slow-types",
         "ban-types",
         "require-await"
       ]
