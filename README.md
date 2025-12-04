@@ -136,6 +136,31 @@ if (result?.uuid) {
 - ✅ **Streaming**: SSE streaming with callbacks
 - ✅ **Supabase Ready**: Works in Edge Functions
 
+## Tested Functionality
+
+All SDK methods verified with Supabase Edge Functions:
+
+| Test | Status | Description |
+|------|--------|-------------|
+| `prompts.getAll()` | ✅ | List all prompts |
+| `prompts.get(path)` | ✅ | Get single prompt |
+| `prompts.run()` sync | ✅ | Non-streaming execution |
+| `prompts.run()` stream | ✅ | Streaming with callbacks |
+| `prompts.run()` structured | ✅ | JSON schema output |
+| `prompts.chat()` | ✅ | Conversation continuation |
+| `logs.create()` | ✅ | Create log entries |
+| SDK initialization | ✅ | Various config options |
+| Error handling | ✅ | Invalid prompt errors |
+| Concurrent requests | ✅ | Parallel execution |
+
+Run example tests:
+
+```bash
+cd examples/supabase-test/supabase/functions
+NODE_ENV=production deno run --allow-net --allow-env --import-map=deno.json latitude-test/index.ts
+# Then visit http://localhost:8000?action=all
+```
+
 ## Development
 
 ```bash
