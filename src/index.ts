@@ -7,7 +7,8 @@ import {
   type ToolCallResponse,
   type ToolRequest,
 } from './constants/index.ts';
-import type { Message, MessageRole, ToolCall } from './constants/index.ts';
+import { MessageRole } from './constants/index.ts';
+import type { Message, ToolCall } from './constants/index.ts';
 
 import env from './env/index.ts';
 import { type GatewayApiConfig, RouteResolver } from './utils/index.ts';
@@ -1295,7 +1296,7 @@ export { LatitudeApiError };
 export { LogSources };
 
 /** Enum of message roles (system, user, assistant, tool). */
-export type { MessageRole };
+export { MessageRole };
 
 /** Provider adapters from promptl-ai. */
 export { Adapters } from 'promptl-ai';

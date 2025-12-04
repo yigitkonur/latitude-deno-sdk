@@ -1,6 +1,6 @@
 {
   "name": "@yigitkonur/latitude-deno-sdk",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Latitude Deno SDK - Community fork of the official Node.js SDK, rebuilt for Deno and Supabase Edge Functions",
   "license": "MIT",
   "exports": "./src/mod.ts",
@@ -10,7 +10,9 @@
     "zod": "npm:zod@^3.23.0",
     "promptl-ai": "npm:promptl-ai@^0.9.4",
     "@std/assert": "jsr:@std/assert@^1.0.0",
-    "@std/semver": "jsr:@std/semver@^1.0.3"
+    "@std/semver": "jsr:@std/semver@^1.0.3",
+    "@std/testing": "jsr:@std/testing@^1.0.0",
+    "@std/testing/bdd": "jsr:@std/testing@^1.0.0/bdd"
   },
   "compilerOptions": {
     "strict": true,
@@ -23,11 +25,15 @@
   "tasks": {
     "check": "deno check src/mod.ts",
     "test": "deno test --allow-net --allow-env src/tests/",
+    "test:coverage": "deno test --allow-net --allow-env --coverage=coverage src/tests/ && deno coverage coverage --lcov > coverage.lcov",
+    "test:watch": "deno test --allow-net --allow-env --watch src/tests/",
+    "examples": "deno check examples/*.ts",
+    "examples:run": "deno task examples && echo 'All examples type-check successfully'",
     "version:patch": "deno run -A scripts/bump.ts patch && git add deno.json && git commit -m \"chore: bump version\"",
     "version:minor": "deno run -A scripts/bump.ts minor && git add deno.json && git commit -m \"chore: bump version\"",
     "version:major": "deno run -A scripts/bump.ts major && git add deno.json && git commit -m \"chore: bump version\"",
-    "fmt": "deno fmt src/",
-    "lint": "deno lint src/"
+    "fmt": "deno fmt src/ examples/",
+    "lint": "deno lint src/ examples/"
   },
   "fmt": {
     "useTabs": false,
@@ -38,10 +44,11 @@
   },
   "lint": {
     "include": [
-      "src/"
+      "src/",
+      "examples/"
     ],
     "exclude": [
-      "examples/",
+      "examples/supabase-test/",
       "scripts/"
     ],
     "rules": {
@@ -53,6 +60,9 @@
         "explicit-module-boundary-types",
         "camelcase",
         "single-var-declarator",
+        "no-console"
+      ],
+      "exclude": [
         "no-console"
       ]
     }

@@ -7,6 +7,7 @@
  */
 
 import { Latitude } from '../src/mod.ts';
+import { MessageRole } from '../src/constants/index.ts';
 
 const latitude = new Latitude(Deno.env.get('LATITUDE_API_KEY')!, {
   projectId: Number(Deno.env.get('LATITUDE_PROJECT_ID')),
@@ -34,7 +35,10 @@ console.log(`  Conversation UUID: ${initial?.uuid}`);
 if (initial?.uuid) {
   try {
     const followUp = await latitude.prompts.chat(initial.uuid, [
-      { role: 'user', content: 'How does it compare to JavaScript?' },
+      {
+        role: MessageRole.user,
+        content: [{ type: 'text' as const, text: 'How does it compare to JavaScript?' }],
+      },
     ]);
 
     console.log('\nFollow-up response:');
@@ -79,7 +83,10 @@ async function conductConversation(
 
     try {
       const response = await latitude.prompts.chat(conversationUuid, [
-        { role: 'user', content: question },
+        {
+          role: MessageRole.user,
+          content: [{ type: 'text' as const, text: question }],
+        } as never,
       ]);
 
       history.push({ role: 'user', content: question });
@@ -142,7 +149,10 @@ if (chatUuid) {
   try {
     await latitude.prompts.chat(
       chatUuid,
-      [{ role: 'user', content: 'How does it differ from Node.js?' }],
+      [{
+        role: MessageRole.user,
+        content: [{ type: 'text' as const, text: 'How does it differ from Node.js?' }],
+      } as never],
       {
         stream: true,
         onEvent: () => {
@@ -196,7 +206,10 @@ class ConversationManager {
     }
 
     const result = await this.latitude.prompts.chat(uuid, [
-      { role: 'user', content: message },
+      {
+        role: MessageRole.user,
+        content: [{ type: 'text' as const, text: message }],
+      } as never,
     ]);
 
     return {
@@ -265,7 +278,10 @@ async function simulateInteractiveChat(
       // Subsequent turns
       try {
         const result = await latitude.prompts.chat(uuid, [
-          { role: 'user', content: exchange.user },
+          {
+            role: MessageRole.user,
+            content: [{ type: 'text' as const, text: exchange.user }],
+          } as never,
         ]);
         response = result?.response?.text;
       } catch {

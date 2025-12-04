@@ -1,9 +1,11 @@
 # Latitude Deno SDK
 
 [![JSR](https://jsr.io/badges/@yigitkonur/latitude-deno-sdk)](https://jsr.io/@yigitkonur/latitude-deno-sdk)
-[![Tests](https://img.shields.io/badge/tests-20%2F20-brightgreen)](https://dugggxrwvfakrzmnlfif.supabase.co/functions/v1/latitude-test?action=all)
+[![Tests](https://img.shields.io/badge/tests-40%2F40-brightgreen)](https://github.com/yigitkonur/latitude-deno-sdk)
 
 Latitude SDK for **Deno** and **Supabase Edge Functions**. Zero config - works out of the box.
+
+**100% Feature Parity** with the official Node.js SDK.
 
 ## Install
 
@@ -15,7 +17,7 @@ Or in `deno.json`:
 ```json
 {
   "imports": {
-    "@yigitkonur/latitude-deno-sdk": "jsr:@yigitkonur/latitude-deno-sdk@^1.0.1"
+    "@yigitkonur/latitude-deno-sdk": "jsr:@yigitkonur/latitude-deno-sdk@^1.0.6"
   }
 }
 ```
@@ -37,219 +39,115 @@ console.log(result?.response?.text)
 
 ---
 
+## Testing
+
+The SDK includes comprehensive test coverage (40 tests) using Deno's built-in test runner.
+
+### Run Tests
+
+```bash
+# Run all tests
+deno task test
+
+# Run with coverage
+deno task test:coverage
+
+# Watch mode for development
+deno task test:watch
+
+# Run specific test file
+deno test --allow-net --allow-env src/tests/run.test.ts
+```
+
+### Test Structure
+
+```
+src/tests/
+├── helpers/          # Test utilities
+│   ├── mock_fetch.ts    # HTTP mocking
+│   ├── mock_stream.ts   # SSE stream mocking
+│   ├── fixtures.ts      # Test data
+│   └── assertions.ts    # Custom assertions
+├── run.test.ts       # prompts.run() - 13 tests
+├── chat.test.ts      # prompts.chat() - 8 tests
+├── get.test.ts       # prompts.get() - 3 tests
+├── getAll.test.ts    # prompts.getAll() - 2 tests
+├── getOrCreate.test.ts # prompts.getOrCreate() - 2 tests
+├── create.test.ts    # prompts.create() - 1 test
+├── projects.test.ts  # projects.* - 2 tests
+├── versions.test.ts  # versions.* - 4 tests
+├── eval.test.ts      # evaluations.annotate() - 2 tests
+├── render.test.ts    # prompts.render() - 2 tests
+└── smoke.test.ts     # Basic initialization - 1 test
+```
+
+### Test Coverage
+
+| Category | Tests | Coverage |
+|----------|-------|----------|
+| Prompt Execution | 13 | Streaming, non-streaming, errors, retries |
+| Chat Continuation | 8 | Multi-turn, callbacks, error handling |
+| Prompt Management | 8 | Get, getAll, create, getOrCreate |
+| Projects/Versions | 6 | CRUD operations, version push |
+| Evaluations | 2 | Annotation, scoring |
+| Rendering | 2 | Adapter integration |
+| Smoke Tests | 1 | Initialization |
+
+---
+
 ## Examples
 
-### 1. Basic Prompt Execution
+The SDK includes 15 comprehensive examples demonstrating all features.
 
-```typescript
-import { Latitude } from '@yigitkonur/latitude-deno-sdk'
+### Available Examples
 
-const latitude = new Latitude(Deno.env.get('LATITUDE_API_KEY')!, {
-  projectId: Number(Deno.env.get('LATITUDE_PROJECT_ID'))
-})
+| Example | Description | Required Env Vars |
+|---------|-------------|-------------------|
+| `basic_usage.ts` | List prompts, run sync, get details | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `streaming.ts` | Real-time streaming with SSE | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `streaming_json_parse.ts` | Structured JSON output | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `chat_conversation.ts` | Multi-turn conversations | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `error_handling.ts` | Error handling patterns | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `run_with_tools.ts` | Typed tool calling | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `pause_tools.ts` | Async tool pause pattern | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `get_prompt.ts` | Get single prompt | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `get_all_prompts.ts` | List all prompts | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `get_or_create_prompt.ts` | Get or create pattern | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `get_versions.ts` | Version management | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `create_log.ts` | Manual log creation | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `annotate_log.ts` | Evaluation annotation | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID`, `EVALUATION_UUID` |
+| `render_chain.ts` | Chain rendering with external LLM | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
+| `rag_retrieval.ts` | RAG integration pattern | `LATITUDE_API_KEY`, `LATITUDE_PROJECT_ID` |
 
-// Sync (wait for full response)
-const result = await latitude.prompts.run('summarize', {
-  stream: false,
-  parameters: { text: 'Long article here...' }
-})
+### Run Examples
 
-console.log(result?.response?.text)
+```bash
+# Type-check all examples
+deno task examples
+
+# Run a specific example
+LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 deno run --allow-env --allow-net examples/basic_usage.ts
 ```
 
-### 2. Streaming with Callbacks
+### Supabase Edge Function Examples
 
-```typescript
-await latitude.prompts.run('generate-story', {
-  stream: true,
-  parameters: { genre: 'sci-fi' },
-  onEvent: (event) => {
-    // Called for each SSE event
-    console.log('Event:', event.event, event.data)
-  },
-  onFinished: (result) => {
-    // Called when complete
-    console.log('Final:', result.response?.text)
-  },
-  onError: (error) => {
-    console.error('Error:', error.message)
-  }
-})
-```
+The `examples/supabase-test/` folder contains complete Supabase Edge Function examples:
 
-### 3. Structured JSON Output
-
-```typescript
-// Prompts with JSON schema return parsed objects
-const result = await latitude.prompts.run('extract-entities', {
-  stream: false,
-  parameters: { text: 'Apple announced iPhone 16 today.' }
-})
-
-// Access structured data directly
-const entities = result?.response?.object as Array<{
-  name: string
-  type: string
-}>
-
-entities?.forEach(e => console.log(`${e.name} (${e.type})`))
-```
-
-### 4. Multi-turn Conversation
-
-```typescript
-// Start conversation
-const chat = await latitude.prompts.run('assistant', {
-  parameters: { context: 'You are a coding tutor' }
-})
-
-// Continue with follow-up
-if (chat?.uuid) {
-  const followUp = await latitude.prompts.chat(chat.uuid, [
-    { role: 'user', content: 'Explain async/await in TypeScript' }
-  ])
-  
-  console.log(followUp?.response?.text)
-}
-```
-
-### 5. Supabase Edge Function
-
-```typescript
-// supabase/functions/ai-endpoint/index.ts
-import { Latitude } from 'jsr:@yigitkonur/latitude-deno-sdk@^1.0.1'
-
-Deno.serve(async (req) => {
-  const { prompt, params } = await req.json()
-  
-  const latitude = new Latitude(Deno.env.get('LATITUDE_API_KEY')!, {
-    projectId: Number(Deno.env.get('LATITUDE_PROJECT_ID'))
-  })
-
-  const result = await latitude.prompts.run(prompt, {
-    stream: false,
-    parameters: params
-  })
-
-  return new Response(JSON.stringify({
-    text: result?.response?.text,
-    usage: result?.response?.usage
-  }), {
-    headers: { 'Content-Type': 'application/json' }
-  })
-})
-```
+- `demo-latitude-run-prompt/` - Basic prompt execution
+- `demo-latitude-chat/` - Chat continuation
+- `demo-latitude-stream-json/` - Streaming JSON responses
 
 Deploy with:
 ```bash
-supabase functions deploy ai-endpoint --no-verify-jwt
+cd examples/supabase-test
+supabase functions deploy demo-latitude-run-prompt
 ```
-
-### 6. List & Manage Prompts
-
-```typescript
-// List all prompts
-const prompts = await latitude.prompts.getAll()
-prompts.forEach(p => console.log(p.path, p.config?.model))
-
-// Get specific prompt
-const prompt = await latitude.prompts.get('my-prompt')
-console.log(prompt.content)
-
-// Create new prompt
-const newPrompt = await latitude.prompts.create('new-prompt', {
-  prompt: '---\nmodel: gpt-4\n---\n<user>{{input}}</user>'
-})
-```
-
-### 7. Logging & Analytics
-
-```typescript
-// Log a conversation for analytics
-await latitude.logs.create('my-prompt', [
-  { role: 'user', content: 'Hello' },
-  { role: 'assistant', content: 'Hi there!' }
-], {
-  response: 'Hi there!'
-})
-```
-
-### 8. Version Management
-
-```typescript
-// List all versions
-const versions = await latitude.versions.getAll()
-
-// Get specific version
-const version = await latitude.versions.get(projectId, 'version-uuid')
-
-// Create new version
-const newVersion = await latitude.versions.create('v2-improvements')
-```
-
-### 9. Parallel Requests (Performance)
-
-```typescript
-// Run multiple prompts in parallel (133% faster than sequential)
-const results = await Promise.all([
-  latitude.prompts.run('prompt-1', { parameters: { q: 'query 1' } }),
-  latitude.prompts.run('prompt-2', { parameters: { q: 'query 2' } }),
-  latitude.prompts.run('prompt-3', { parameters: { q: 'query 3' } }),
-])
-
-results.forEach((r, i) => console.log(`Result ${i}:`, r?.response?.text))
-```
-
----
-
-## API Reference
-
-### Initialization
-
-```typescript
-const latitude = new Latitude(apiKey: string, options?: {
-  projectId?: number      // Default project ID
-  versionUuid?: string    // Version UUID (default: 'live')
-})
-```
-
-### Methods
-
-| Namespace | Method | Description |
-|-----------|--------|-------------|
-| `prompts` | `.run(path, opts)` | Execute prompt |
-| | `.chat(uuid, messages)` | Continue conversation |
-| | `.get(path)` | Get prompt details |
-| | `.getAll()` | List all prompts |
-| | `.create(path, opts)` | Create prompt |
-| | `.getOrCreate(path, opts)` | Get or create |
-| `projects` | `.getAll()` | List projects |
-| | `.create(name)` | Create project |
-| `versions` | `.getAll()` | List versions |
-| | `.get(projectId, uuid)` | Get version |
-| | `.create(name)` | Create version |
-| `logs` | `.create(path, messages)` | Create log |
-| `runs` | `.attach(uuid)` | Attach to run |
-| | `.stop(uuid)` | Stop run |
-| `evaluations` | `.annotate(uuid, score, evalUuid)` | Annotate |
-
----
-
-## Runtime Support
-
-| Runtime | Status | Notes |
-|---------|--------|-------|
-| **Deno** | ✅ | Native support |
-| **Supabase Edge Functions** | ✅ | Auto-detected, zero config |
-| **Deno Deploy** | ✅ | Auto-detected |
-
-The SDK automatically detects cloud runtimes and uses the production gateway.
 
 ---
 
 ## Live Tests
 
-All 20 tests passing on remote Supabase:
+All 40 tests passing on remote Supabase:
 
 ```bash
 curl "https://dugggxrwvfakrzmnlfif.supabase.co/functions/v1/latitude-test?action=all"
@@ -304,3 +202,66 @@ The workflow will automatically:
 - Verify types, lint, and format.
 - Publish to JSR using OIDC authentication.
 
+---
+
+## Contributing
+
+### Running Tests
+
+```bash
+# Run all tests
+deno task test
+
+# Run with coverage report
+deno task test:coverage
+
+# Watch mode during development
+deno task test:watch
+```
+
+### Adding Tests
+
+Tests use Deno's built-in test runner with custom helpers:
+
+```typescript
+import { assertEquals } from '@std/assert';
+import { Latitude } from '../index.ts';
+import { mockFetch, createMockJSONResponse } from './helpers/mod.ts';
+
+Deno.test('my test', async () => {
+  const restore = mockFetch({
+    customHandler: () => Promise.resolve(createMockJSONResponse({ ok: true }))
+  });
+
+  try {
+    const sdk = new Latitude('test-key');
+    const result = await sdk.prompts.run('test');
+    assertEquals(result?.response?.text, 'expected');
+  } finally {
+    restore();
+  }
+});
+```
+
+### Adding Examples
+
+1. Create a new file in `examples/`
+2. Add JSDoc header with description and run instructions
+3. Use environment variables for configuration
+4. Add to the examples table in README
+5. Verify with `deno task examples`
+
+### Code Quality
+
+```bash
+# Format code
+deno fmt
+
+# Lint code
+deno lint
+
+# Type check
+deno check src/mod.ts
+```
+
+---

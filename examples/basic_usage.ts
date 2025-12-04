@@ -55,9 +55,10 @@ try {
     console.log(`  Tokens used: ${result.response.usage?.totalTokens ?? 'N/A'}`);
     console.log(`  Conversation UUID: ${result.uuid}`);
 
-    // If the prompt returns structured JSON
-    if (result.response.object) {
-      console.log('  Structured output:', JSON.stringify(result.response.object, null, 2));
+    // If the prompt returns structured JSON (check if object response)
+    const objectResponse = result.response as { object?: unknown };
+    if (objectResponse.object) {
+      console.log('  Structured output:', JSON.stringify(objectResponse.object, null, 2));
     }
   }
 } catch (error) {

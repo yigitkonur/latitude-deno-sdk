@@ -161,7 +161,7 @@ Deno.serve(async (req) => {
               hasUuid: !!result?.uuid,
               hasResponse: !!result?.response,
               hasText: !!result?.response?.text,
-              hasObject: !!result?.response?.object,
+              hasObject: !!(result?.response as { object?: unknown })?.object,
               tokenCount: result?.response?.usage?.totalTokens,
             }
           })
@@ -224,7 +224,7 @@ Deno.serve(async (req) => {
               },
             })
 
-            const profiles = result?.response?.object as Array<{ full_name: string; entity_title: string }> | undefined
+            const profiles = (result?.response as { object?: unknown })?.object as Array<{ full_name: string; entity_title: string }> | undefined
             return {
               isArray: Array.isArray(profiles),
               profileCount: profiles?.length ?? 0,
@@ -252,7 +252,7 @@ Deno.serve(async (req) => {
 
             try {
               const chat = await latitude.prompts.chat(initial.uuid, [
-                { role: 'user', content: 'Add another profile: John Doe - CEO at Startup' },
+                { role: 'user' as const, content: [{ type: 'text', text: 'Add another profile: John Doe - CEO at Startup' }] },
               ])
               return { initialUuid: initial.uuid, chatWorked: true, hasResponse: !!chat?.response }
             } catch {
@@ -329,8 +329,8 @@ Deno.serve(async (req) => {
         tests.push(
           await runTest('logs', 'logs.create()', async () => {
             const log = await latitude.logs.create('extract-linkedin-from-serp', [
-              { role: 'user', content: 'Test log from Deno SDK comprehensive test' },
-              { role: 'assistant', content: '[{"full_name": "Test User", "entity_title": "Test Company"}]' },
+              { role: 'user' as const, content: [{ type: 'text', text: 'Test log from Deno SDK comprehensive test' }] },
+              { role: 'assistant' as const, content: [{ type: 'text', text: '[{"full_name": "Test User", "entity_title": "Test Company"}]' }] },
             ])
             return { created: true, uuid: log.uuid }
           })
