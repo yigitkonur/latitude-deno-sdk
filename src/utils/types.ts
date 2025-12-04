@@ -18,13 +18,13 @@
  */
 export type HandlerConfig<U, B> = {
   /** URL parameters for the handler. */
-  UrlParams: U
+  UrlParams: U;
   /** Body parameters for the handler. */
-  BodyParams: B
-}
+  BodyParams: B;
+};
 
-import { RouteResolver } from './index.ts'
-import { LatitudeApiError } from './errors.ts'
+import { RouteResolver } from './index.ts';
+import { LatitudeApiError } from './errors.ts';
 import {
   AssertedStreamType,
   ChainCallResponseDto,
@@ -33,23 +33,15 @@ import {
   Providers,
   type RunSyncAPIResponse,
   StreamEventTypes,
-} from '../constants/index.ts'
+} from '../constants/index.ts';
 
 /** Re-exported synchronous chat API response type for backwards compatibility. */
-export type { ChatSyncAPIResponse }
+export type { ChatSyncAPIResponse };
 /** Re-exported synchronous run API response type for backwards compatibility. */
-export type { RunSyncAPIResponse }
+export type { RunSyncAPIResponse };
 
-import type {
-  Config,
-  Message,
-  ToolCall,
-} from '../constants/index.ts'
-import {
-  AdapterMessageType,
-  ProviderAdapter,
-  type Message as PromptlMessage,
-} from 'promptl-ai'
+import type { Config, Message, ToolCall } from '../constants/index.ts';
+import { AdapterMessageType, type Message as PromptlMessage, ProviderAdapter } from 'promptl-ai';
 
 /**
  * Chain event wrapper containing event data and type.
@@ -57,10 +49,10 @@ import {
  */
 export type ChainEvent = {
   /** The event payload data. */
-  data: unknown
+  data: unknown;
   /** The stream event type. */
-  event: StreamEventTypes
-}
+  event: StreamEventTypes;
+};
 
 /**
  * Types of events that can occur during chain execution.
@@ -95,68 +87,68 @@ export enum ParameterType {
 /** URL parameters for listing all documents in a project. */
 export type GetAllDocumentsParams = {
   /** The project ID to list documents from. */
-  projectId: number
+  projectId: number;
   /** Optional version UUID, defaults to "live". */
-  versionUuid?: string
-}
+  versionUuid?: string;
+};
 
 /** URL parameters for getting a specific document. */
 export type GetDocumentUrlParams = GetAllDocumentsParams & {
   /** The document path. */
-  path: string
-}
+  path: string;
+};
 
 /** URL parameters for creating or getting a document. */
 export type GetOrCreateDocumentUrlParams = {
   /** The project ID. */
-  projectId: number
+  projectId: number;
   /** Optional version UUID. */
-  versionUuid?: string
-}
+  versionUuid?: string;
+};
 
 /** URL parameters for running a document. */
 export type RunDocumentUrlParams = {
   /** The project ID. */
-  projectId: number
+  projectId: number;
   /** Optional version UUID. */
-  versionUuid?: string
-}
+  versionUuid?: string;
+};
 
 /** URL parameters for chat operations. */
 export type ChatUrlParams = {
   /** The conversation UUID. */
-  conversationUuid: string
-}
+  conversationUuid: string;
+};
 
 /** URL parameters for stopping a run. */
 export type StopRunUrlParams = {
   /** The conversation UUID to stop. */
-  conversationUuid: string
-}
+  conversationUuid: string;
+};
 
 /** URL parameters for attaching to a run. */
 export type AttachRunUrlParams = {
   /** The conversation UUID to attach to. */
-  conversationUuid: string
-}
+  conversationUuid: string;
+};
 
 /** URL parameters for annotation operations. */
 export type AnnotateUrlParams = {
   /** The conversation UUID to annotate. */
-  conversationUuid: string
+  conversationUuid: string;
   /** The evaluation UUID to use. */
-  evaluationUuid: string
-}
+  evaluationUuid: string;
+};
 
 /** Body parameters for annotation requests. */
 export type AnnotateBodyParams = {
   /** The score value (typically 0-1). */
-  score: number
+  score: number;
   /** Optional metadata with reason. */
-  metadata?: { reason: string }
+  metadata?: { reason: string };
   /** Optional version UUID. */
-  versionUuid?: string
-}
+  versionUuid?: string;
+};
 
 // =============================================================================
 // PROJECT RELATED TYPES
@@ -173,46 +165,46 @@ export type AnnotateBodyParams = {
  */
 export type Project = {
   /** Unique project identifier. */
-  id: number
+  id: number;
   /** Project display name. */
-  name: string
+  name: string;
   /** Workspace this project belongs to. */
-  workspaceId: number
+  workspaceId: number;
   /** ISO timestamp of creation. */
-  createdAt: string
+  createdAt: string;
   /** ISO timestamp of last update. */
-  updatedAt: string
+  updatedAt: string;
   /** ISO timestamp of last edit (optional). */
-  lastEditedAt?: string
+  lastEditedAt?: string;
   /** ISO timestamp of deletion, null if not deleted. */
-  deletedAt: string | null
-}
+  deletedAt: string | null;
+};
 
 /**
  * Commit metadata representing a version commit.
  */
 export type Commit = {
   /** Unique commit identifier. */
-  id: number
+  id: number;
   /** Commit UUID. */
-  uuid: string
+  uuid: string;
   /** Commit title/name. */
-  title: string
+  title: string;
   /** Commit description. */
-  description: string
+  description: string;
   /** Project this commit belongs to. */
-  projectId: number
+  projectId: number;
   /** Version number. */
-  version: number
+  version: number;
   /** User who created this commit. */
-  userId: string
+  userId: string;
   /** ISO timestamp when merged. */
-  mergedAt: string
+  mergedAt: string;
   /** ISO timestamp of deletion, null if not deleted. */
-  deletedAt: string | null
+  deletedAt: string | null;
   /** UUID of the main document, if any. */
-  mainDocumentUuid: string | null
-}
+  mainDocumentUuid: string | null;
+};
 
 /**
  * Version metadata representing a prompt version.
@@ -225,103 +217,103 @@ export type Commit = {
  */
 export type Version = {
   /** ISO timestamp of creation. */
-  createdAt: string
+  createdAt: string;
   /** ISO timestamp of last update. */
-  updatedAt: string
+  updatedAt: string;
   /** Unique version identifier. */
-  id: number
+  id: number;
   /** Version UUID used in API calls. */
-  uuid: string
+  uuid: string;
   /** Version title/name. */
-  title: string
+  title: string;
   /** Version description, if any. */
-  description: string | null
+  description: string | null;
   /** Project this version belongs to. */
-  projectId: number
+  projectId: number;
   /** Version number, if numbered. */
-  version: number | null
+  version: number | null;
   /** User who created this version. */
-  userId: string
+  userId: string;
   /** ISO timestamp when merged, null if draft. */
-  mergedAt: string | null
+  mergedAt: string | null;
   /** ISO timestamp of deletion, null if not deleted. */
-  deletedAt: string | null
-}
+  deletedAt: string | null;
+};
 
 /** Body parameters for creating a project. */
 export type CreateProjectBodyParams = {
   /** Name for the new project. */
-  name: string
-}
+  name: string;
+};
 
 /** URL parameters for creating a version. */
 export type CreateVersionUrlParams = {
   /** The project ID. */
-  projectId: number
-}
+  projectId: number;
+};
 
 /** Body parameters for creating a version. */
 export type CreateVersionBodyParams = {
   /** Name for the new version. */
-  name: string
-}
+  name: string;
+};
 
 /** URL parameters for getting a version. */
 export type GetversionUrlParams = {
   /** The project ID. */
-  projectId: number
+  projectId: number;
   /** The version UUID. */
-  versionUuid: string
-}
+  versionUuid: string;
+};
 
 /** URL parameters for getting all versions. */
 export type GetAllVersionsUrlParams = {
   /** The project ID. */
-  projectId: number
-}
+  projectId: number;
+};
 
 /** URL parameters for pushing to a version. */
 export type PushVersionUrlParams = {
   /** The project ID. */
-  projectId: number
+  projectId: number;
   /** The base commit UUID. */
-  commitUuid: string
-}
+  commitUuid: string;
+};
 
 /** Body parameters for pushing version changes. */
 export type PushVersionBodyParams = {
   /** Array of document changes to push. */
   changes: Array<{
     /** Document path. */
-    path: string
+    path: string;
     /** New document content. */
-    content: string
+    content: string;
     /** Change status. */
-    status: 'added' | 'modified' | 'deleted' | 'unchanged'
+    status: 'added' | 'modified' | 'deleted' | 'unchanged';
     /** Optional content hash for verification. */
-    contentHash?: string
-  }>
-}
+    contentHash?: string;
+  }>;
+};
 
 /** Body parameters for creating a log. */
 export type LogBodyParams = {
   /** The prompt path. */
-  path: string
+  path: string;
   /** Conversation messages. */
-  messages: Message[]
+  messages: Message[];
   /** Optional response text. */
-  response?: string
-}
+  response?: string;
+};
 
 /** Body parameters for tool results. */
 export type ToolResultsBodyParams = {
   /** The tool call ID this result is for. */
-  toolCallId: string
+  toolCallId: string;
   /** The tool execution result. */
-  result: unknown
+  result: unknown;
   /** Whether the tool execution resulted in an error. */
-  isError?: boolean
-}
+  isError?: boolean;
+};
 
 /**
  * Enum of API handler types for routing requests.
@@ -367,45 +359,45 @@ export enum HandlerType {
 }
 
 export type HandlerConfigs = {
-  [HandlerType.Annotate]: HandlerConfig<AnnotateUrlParams, AnnotateBodyParams>
-  [HandlerType.Chat]: HandlerConfig<ChatUrlParams, ChatBodyParams>
+  [HandlerType.Annotate]: HandlerConfig<AnnotateUrlParams, AnnotateBodyParams>;
+  [HandlerType.Chat]: HandlerConfig<ChatUrlParams, ChatBodyParams>;
   [HandlerType.CreateDocument]: HandlerConfig<
     GetOrCreateDocumentUrlParams,
     GetOrCreateDocumentBodyParams
-  >
-  [HandlerType.CreateProject]: HandlerConfig<never, CreateProjectBodyParams>
+  >;
+  [HandlerType.CreateProject]: HandlerConfig<never, CreateProjectBodyParams>;
   [HandlerType.CreateVersion]: HandlerConfig<
     CreateVersionUrlParams,
     CreateVersionBodyParams
-  >
-  [HandlerType.GetAllDocuments]: HandlerConfig<GetAllDocumentsParams, never>
-  [HandlerType.GetAllProjects]: HandlerConfig<never, never>
-  [HandlerType.GetDocument]: HandlerConfig<GetDocumentUrlParams, never>
+  >;
+  [HandlerType.GetAllDocuments]: HandlerConfig<GetAllDocumentsParams, never>;
+  [HandlerType.GetAllProjects]: HandlerConfig<never, never>;
+  [HandlerType.GetDocument]: HandlerConfig<GetDocumentUrlParams, never>;
   [HandlerType.GetOrCreateDocument]: HandlerConfig<
     GetOrCreateDocumentUrlParams,
     GetOrCreateDocumentBodyParams
-  >
-  [HandlerType.GetVersion]: HandlerConfig<GetversionUrlParams, never>
-  [HandlerType.GetAllVersions]: HandlerConfig<GetAllVersionsUrlParams, never>
+  >;
+  [HandlerType.GetVersion]: HandlerConfig<GetversionUrlParams, never>;
+  [HandlerType.GetAllVersions]: HandlerConfig<GetAllVersionsUrlParams, never>;
   [HandlerType.PushVersion]: HandlerConfig<
     PushVersionUrlParams,
     PushVersionBodyParams
-  >
+  >;
   [HandlerType.RunDocument]: HandlerConfig<
     RunDocumentUrlParams,
     RunDocumentBodyParams
-  >
-  [HandlerType.Log]: HandlerConfig<RunDocumentUrlParams, LogBodyParams>
-  [HandlerType.ToolResults]: HandlerConfig<never, ToolResultsBodyParams>
-  [HandlerType.StopRun]: HandlerConfig<StopRunUrlParams, never>
+  >;
+  [HandlerType.Log]: HandlerConfig<RunDocumentUrlParams, LogBodyParams>;
+  [HandlerType.ToolResults]: HandlerConfig<never, ToolResultsBodyParams>;
+  [HandlerType.StopRun]: HandlerConfig<StopRunUrlParams, never>;
   [HandlerType.AttachRun]: HandlerConfig<
     AttachRunUrlParams,
     AttachRunBodyParams
-  >
-}
+  >;
+};
 
-export type UrlParams<H extends HandlerType> = HandlerConfigs[H]['UrlParams']
-export type BodyParams<H extends HandlerType> = HandlerConfigs[H]['BodyParams']
+export type UrlParams<H extends HandlerType> = HandlerConfigs[H]['UrlParams'];
+export type BodyParams<H extends HandlerType> = HandlerConfigs[H]['BodyParams'];
 
 /**
  * Reference to a background generation job.
@@ -421,8 +413,8 @@ export type BodyParams<H extends HandlerType> = HandlerConfigs[H]['BodyParams']
  */
 export type GenerationJob = {
   /** UUID of the background job for status tracking. */
-  uuid: string
-}
+  uuid: string;
+};
 
 /**
  * Response from a generation request.
@@ -438,24 +430,24 @@ export type GenerationJob = {
  */
 export type GenerationResponse<S extends AssertedStreamType = 'text'> = {
   /** Conversation UUID for follow-up messages. */
-  uuid: string
+  uuid: string;
   /** Full conversation history including the response. */
-  conversation: Message[]
+  conversation: Message[];
   /** The AI response data. */
-  response: ChainCallResponseDto<S>
-}
+  response: ChainCallResponseDto<S>;
+};
 
 export type StreamResponseCallbacks<S extends AssertedStreamType = 'text'> = {
   onEvent?: ({
     event,
     data,
   }: {
-    event: StreamEventTypes
-    data: ChainEventDto
-  }) => void
-  onFinished?: (data: GenerationResponse<S>) => void
-  onError?: (error: LatitudeApiError) => void
-}
+    event: StreamEventTypes;
+    data: ChainEventDto;
+  }) => void;
+  onFinished?: (data: GenerationResponse<S>) => void;
+  onError?: (error: LatitudeApiError) => void;
+};
 
 /**
  * Sources that can create logs in Latitude.
@@ -476,10 +468,10 @@ export enum LogSources {
  */
 export type RenderToolCallDetails = {
   /** The tool call ID. */
-  id: string
+  id: string;
   /** The tool name. */
-  name: string
-}
+  name: string;
+};
 
 /**
  * Type specification for defining tool schemas.
@@ -493,7 +485,7 @@ export type RenderToolCallDetails = {
  * };
  * ```
  */
-export type ToolSpec = Record<string, Record<string, unknown>>
+export type ToolSpec = Record<string, Record<string, unknown>>;
 
 /**
  * Handler function type for processing tool calls.
@@ -504,7 +496,7 @@ export type ToolSpec = Record<string, Record<string, unknown>>
 export type ToolHandler<T extends ToolSpec, K extends keyof T> = (
   toolCall: T[K],
   details: ToolCall,
-) => Promise<unknown>
+) => Promise<unknown>;
 
 /**
  * Map of tool handlers keyed by tool name.
@@ -521,8 +513,8 @@ export type ToolHandler<T extends ToolSpec, K extends keyof T> = (
  * ```
  */
 export type ToolCalledFn<Tools extends ToolSpec> = {
-  [K in keyof Tools]: ToolHandler<Tools, K>
-}
+  [K in keyof Tools]: ToolHandler<Tools, K>;
+};
 
 /**
  * Handler function type for rendering tool results.
@@ -533,7 +525,7 @@ export type ToolCalledFn<Tools extends ToolSpec> = {
 export type RenderToolHandler<T extends ToolSpec, K extends keyof T> = (
   toolCall: T[K],
   details: RenderToolCallDetails,
-) => Promise<string | Omit<PromptlMessage, 'role'> | PromptlMessage[]>
+) => Promise<string | Omit<PromptlMessage, 'role'> | PromptlMessage[]>;
 
 /**
  * Map of render tool handlers keyed by tool name.
@@ -541,11 +533,11 @@ export type RenderToolHandler<T extends ToolSpec, K extends keyof T> = (
  * @typeParam Tools - The tool specification type
  */
 export type RenderToolCalledFn<Tools extends ToolSpec> = {
-  [K in keyof Tools]: RenderToolHandler<Tools, K>
-}
+  [K in keyof Tools]: RenderToolHandler<Tools, K>;
+};
 
 /** Supported SDK API versions. */
-export type SdkApiVersion = 'v1' | 'v2' | 'v3'
+export type SdkApiVersion = 'v1' | 'v2' | 'v3';
 
 // Note: ChainEvent, ChainEventTypes already defined above
 // ChatSyncAPIResponse, RunSyncAPIResponse, StreamEventTypes re-exported from constants
@@ -563,10 +555,10 @@ export type SdkApiVersion = 'v1' | 'v2' | 'v3'
  */
 export type GetPromptOptions = {
   /** Project ID to get the prompt from. */
-  projectId?: number
+  projectId?: number;
   /** Version UUID, defaults to "live". */
-  versionUuid?: string
-}
+  versionUuid?: string;
+};
 
 /**
  * Options for getting or creating a prompt.
@@ -580,12 +572,12 @@ export type GetPromptOptions = {
  */
 export type GetOrCreatePromptOptions = {
   /** Project ID. */
-  projectId?: number
+  projectId?: number;
   /** Version UUID. */
-  versionUuid?: string
+  versionUuid?: string;
   /** Initial prompt content if creating. */
-  prompt?: string
-}
+  prompt?: string;
+};
 
 /**
  * Options for running a prompt.
@@ -608,26 +600,28 @@ export type RunPromptOptions<
   Tools extends ToolSpec,
   S extends AssertedStreamType = 'text',
   Background extends boolean = false,
-> = StreamResponseCallbacks<S> & {
-  /** Project ID to run the prompt from. */
-  projectId?: number
-  /** Version UUID, defaults to "live". */
-  versionUuid?: string
-  /** Custom identifier for tracking. */
-  customIdentifier?: string
-  /** Parameters to pass to the prompt template. */
-  parameters?: Record<string, unknown>
-  /** Whether to stream the response. */
-  stream?: boolean
-  /** Tool handlers for function calling. */
-  tools?: ToolCalledFn<Tools>
-  /** Abort signal for cancellation. */
-  signal?: AbortSignal
-  /** Optional user message to append. */
-  userMessage?: string
-} & (Background extends true
-    ? { background: Background }
-    : { background?: Background })
+> =
+  & StreamResponseCallbacks<S>
+  & {
+    /** Project ID to run the prompt from. */
+    projectId?: number;
+    /** Version UUID, defaults to "live". */
+    versionUuid?: string;
+    /** Custom identifier for tracking. */
+    customIdentifier?: string;
+    /** Parameters to pass to the prompt template. */
+    parameters?: Record<string, unknown>;
+    /** Whether to stream the response. */
+    stream?: boolean;
+    /** Tool handlers for function calling. */
+    tools?: ToolCalledFn<Tools>;
+    /** Abort signal for cancellation. */
+    signal?: AbortSignal;
+    /** Optional user message to append. */
+    userMessage?: string;
+  }
+  & (Background extends true ? { background: Background }
+    : { background?: Background });
 
 /**
  * Result type for running a prompt.
@@ -639,76 +633,75 @@ export type RunPromptOptions<
 export type RunPromptResult<
   S extends AssertedStreamType = 'text',
   Background extends boolean = false,
-> = Background extends true ? GenerationJob : GenerationResponse<S>
+> = Background extends true ? GenerationJob : GenerationResponse<S>;
 
-export type RenderPromptOptions<M extends AdapterMessageType = PromptlMessage> =
-  {
-    prompt: {
-      content: string
-    }
-    parameters: Record<string, unknown>
-    adapter?: ProviderAdapter<M>
-  }
+export type RenderPromptOptions<M extends AdapterMessageType = PromptlMessage> = {
+  prompt: {
+    content: string;
+  };
+  parameters: Record<string, unknown>;
+  adapter?: ProviderAdapter<M>;
+};
 
 export type RenderChainOptions<
   M extends AdapterMessageType = PromptlMessage,
   Tool extends ToolSpec = ToolSpec,
 > = {
-  prompt: Prompt
-  parameters: Record<string, unknown>
-  adapter?: ProviderAdapter<M>
+  prompt: Prompt;
+  parameters: Record<string, unknown>;
+  adapter?: ProviderAdapter<M>;
   onStep: (args: {
-    config: Config
-    messages: M[]
-  }) => Promise<string | Omit<M, 'role'>>
-  tools?: RenderToolCalledFn<Tool>
-  logResponses?: boolean
-}
+    config: Config;
+    messages: M[];
+  }) => Promise<string | Omit<M, 'role'>>;
+  tools?: RenderToolCalledFn<Tool>;
+  logResponses?: boolean;
+};
 
 export type ChatOptions<
   Tools extends ToolSpec,
   S extends AssertedStreamType = 'text',
 > = StreamResponseCallbacks<S> & {
-  messages: Message[]
-  stream?: boolean
-  tools?: ToolCalledFn<Tools>
-  signal?: AbortSignal
-}
+  messages: Message[];
+  stream?: boolean;
+  tools?: ToolCalledFn<Tools>;
+  signal?: AbortSignal;
+};
 
 export type AttachRunOptions<
   Tools extends ToolSpec,
   S extends AssertedStreamType = 'text',
 > = StreamResponseCallbacks<S> & {
-  stream?: boolean
-  tools?: ToolCalledFn<Tools>
-  signal?: AbortSignal
-}
+  stream?: boolean;
+  tools?: ToolCalledFn<Tools>;
+  signal?: AbortSignal;
+};
 
 export type SDKOptions = {
-  apiKey: string
-  retryMs: number
-  source: LogSources
-  routeResolver: RouteResolver
-  versionUuid?: string
-  projectId?: number
-  signal?: AbortSignal
-}
+  apiKey: string;
+  retryMs: number;
+  source: LogSources;
+  routeResolver: RouteResolver;
+  versionUuid?: string;
+  projectId?: number;
+  signal?: AbortSignal;
+};
 
 export type ChatOptionsWithSDKOptions<
   Tools extends ToolSpec,
   S extends AssertedStreamType = 'text',
 > = ChatOptions<Tools, S> & {
-  options: SDKOptions
-}
+  options: SDKOptions;
+};
 
 export interface EvalOptions {
-  evaluationUuids?: string[]
+  evaluationUuids?: string[];
 }
 
 export type EvalPromptOptions = {
-  projectId?: number
-  versionUuid?: string
-}
+  projectId?: number;
+  versionUuid?: string;
+};
 
 /**
  * Prompt document containing template content and configuration.
@@ -722,44 +715,44 @@ export type EvalPromptOptions = {
  */
 export type Prompt = {
   /** Version UUID this prompt belongs to. */
-  versionUuid: string
+  versionUuid: string;
   /** Unique prompt UUID. */
-  uuid: string
+  uuid: string;
   /** Prompt path (e.g., "folder/my-prompt"). */
-  path: string
+  path: string;
   /** The prompt template content. */
-  content: string
+  content: string;
   /** Content hash for change detection. */
-  contentHash?: string
+  contentHash?: string;
   /** Parsed prompt configuration. */
-  config: Config
+  config: Config;
   /** Parameter definitions with their types. */
-  parameters: Record<string, { type: ParameterType }>
+  parameters: Record<string, { type: ParameterType }>;
   /** AI provider for this prompt. */
-  provider?: Providers
-}
+  provider?: Providers;
+};
 
 type GetOrCreateDocumentBodyParams = {
-  path: string
-  prompt?: string
-}
+  path: string;
+  prompt?: string;
+};
 
 type RunDocumentBodyParams = {
-  path: string
-  parameters?: Record<string, unknown>
-  customIdentifier?: string
-  stream?: boolean
-  background?: boolean
-  tools?: string[]
-  userMessage?: string
-}
+  path: string;
+  parameters?: Record<string, unknown>;
+  customIdentifier?: string;
+  stream?: boolean;
+  background?: boolean;
+  tools?: string[];
+  userMessage?: string;
+};
 
 type ChatBodyParams = {
-  messages: Message[]
-  stream?: boolean
-  tools?: string[]
-}
+  messages: Message[];
+  stream?: boolean;
+  tools?: string[];
+};
 
 type AttachRunBodyParams = {
-  stream?: boolean
-}
+  stream?: boolean;
+};

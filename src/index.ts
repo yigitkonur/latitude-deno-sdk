@@ -1,33 +1,25 @@
 import {
   AssertedStreamType,
+  type ChainEventDto,
   DocumentLog,
   Providers,
   PublicManualEvaluationResultV2,
-  ToolRequest,
-  type ChainEventDto,
   type ToolCallResponse,
-} from './constants/index.ts'
-import {
-  type Message,
-  type MessageRole,
-  type ToolCall,
-} from './constants/index.ts'
+  ToolRequest,
+} from './constants/index.ts';
+import { type Message, type MessageRole, type ToolCall } from './constants/index.ts';
 
-import env from './env/index.ts'
-import { GatewayApiConfig, RouteResolver } from './utils/index.ts'
-import { backgroundRun } from './utils/backgroundRun.ts'
-import {
-  ApiErrorCodes,
-  ApiErrorJsonResponse,
-  LatitudeApiError,
-} from './utils/errors.ts'
-import { makeRequest } from './utils/request.ts'
-import { streamAttach } from './utils/streamAttach.ts'
-import { streamChat } from './utils/streamChat.ts'
-import { streamRun } from './utils/streamRun.ts'
-import { syncAttach } from './utils/syncAttach.ts'
-import { syncChat } from './utils/syncChat.ts'
-import { syncRun } from './utils/syncRun.ts'
+import env from './env/index.ts';
+import { GatewayApiConfig, RouteResolver } from './utils/index.ts';
+import { backgroundRun } from './utils/backgroundRun.ts';
+import { ApiErrorCodes, ApiErrorJsonResponse, LatitudeApiError } from './utils/errors.ts';
+import { makeRequest } from './utils/request.ts';
+import { streamAttach } from './utils/streamAttach.ts';
+import { streamChat } from './utils/streamChat.ts';
+import { streamRun } from './utils/streamRun.ts';
+import { syncAttach } from './utils/syncAttach.ts';
+import { syncChat } from './utils/syncChat.ts';
+import { syncRun } from './utils/syncRun.ts';
 import {
   AttachRunOptions,
   ChatOptions,
@@ -49,37 +41,37 @@ import {
   ToolHandler,
   ToolSpec,
   Version,
-} from './utils/types.ts'
+} from './utils/types.ts';
 import {
   AdapterMessageType,
   Chain,
   Config,
   ContentType,
+  type Message as PromptlMessage,
   MessageRole as PromptlMessageRole,
   ProviderAdapter,
   render,
-  type Message as PromptlMessage,
   type ToolCallContent,
-} from 'promptl-ai'
+} from 'promptl-ai';
 
-import { adaptPromptConfigToProvider } from './utils/adapters/adaptPromptConfigToProvider.ts'
-import { getPromptlAdapterFromProvider } from './utils/adapters/getAdapterFromProvider.ts'
+import { adaptPromptConfigToProvider } from './utils/adapters/adaptPromptConfigToProvider.ts';
+import { getPromptlAdapterFromProvider } from './utils/adapters/getAdapterFromProvider.ts';
 
 /** Default retry delay in milliseconds for failed requests. */
-const WAIT_IN_MS_BEFORE_RETRY: number = 1000
+const WAIT_IN_MS_BEFORE_RETRY: number = 1000;
 
 /** Default gateway configuration using environment variables. */
 const DEFAULT_GATEWAY: GatewayApiConfig = {
   host: env.GATEWAY_HOSTNAME,
   port: env.GATEWAY_PORT,
   ssl: env.GATEWAY_SSL,
-}
+};
 
 /** Default internal configuration for SDK operations. */
 const DEFAULT_INTERNAL: { source: LogSources; retryMs: number } = {
   source: LogSources.API,
   retryMs: WAIT_IN_MS_BEFORE_RETRY,
-}
+};
 
 /**
  * Configuration options for initializing the Latitude client.
@@ -94,19 +86,19 @@ const DEFAULT_INTERNAL: { source: LogSources; retryMs: number } = {
  */
 type Options = {
   /** UUID of the prompt version to use. Defaults to "live" if not specified. */
-  versionUuid?: string
+  versionUuid?: string;
   /** Project ID to scope operations to. Required for most operations. */
-  projectId?: number
+  projectId?: number;
   /** Internal configuration options. Not intended for public use. */
   __internal?: {
     /** Gateway API configuration for custom deployments. */
-    gateway?: GatewayApiConfig
+    gateway?: GatewayApiConfig;
     /** Source identifier for logging. */
-    source?: LogSources
+    source?: LogSources;
     /** Retry delay in milliseconds. */
-    retryMs?: number
-  }
-}
+    retryMs?: number;
+  };
+};
 
 /**
  * Main client for interacting with the Latitude API.
@@ -153,9 +145,9 @@ type Options = {
  */
 class Latitude {
   /** Internal SDK configuration options. */
-  protected options: SDKOptions
+  protected options: SDKOptions;
   /** Optional instrumentation for tracing and monitoring. */
-  protected static instrumentation?: Instrumentation
+  protected static instrumentation?: Instrumentation;
 
   /**
    * Evaluation operations for annotating and scoring prompt runs.
@@ -185,11 +177,11 @@ class Latitude {
       score: number,
       evaluationUuid: string,
       opts?: {
-        reason?: string
-        versionUuid?: string
+        reason?: string;
+        versionUuid?: string;
       },
-    ) => Promise<PublicManualEvaluationResultV2>
-  }
+    ) => Promise<PublicManualEvaluationResultV2>;
+  };
 
   /**
    * Project management operations.
@@ -211,7 +203,7 @@ class Latitude {
      *
      * @returns Array of projects
      */
-    getAll: () => Promise<Project[]>
+    getAll: () => Promise<Project[]>;
     /**
      * Create a new project.
      *
@@ -219,10 +211,10 @@ class Latitude {
      * @returns The created project and its initial version
      */
     create: (name: string) => Promise<{
-      project: Project
-      version: Version
-    }>
-  }
+      project: Project;
+      version: Version;
+    }>;
+  };
 
   /**
    * Log creation operations for recording conversations.
@@ -247,12 +239,12 @@ class Latitude {
       path: string,
       messages: Message[],
       options?: {
-        projectId?: number
-        versionUuid?: string
-        response?: string
+        projectId?: number;
+        versionUuid?: string;
+        response?: string;
       },
-    ) => Promise<DocumentLog>
-  }
+    ) => Promise<DocumentLog>;
+  };
 
   /**
    * Prompt operations including get, create, run, and chat.
@@ -285,14 +277,14 @@ class Latitude {
      * @param args - Optional project and version configuration
      * @returns The prompt document
      */
-    get: (path: string, args?: GetPromptOptions) => Promise<Prompt>
+    get: (path: string, args?: GetPromptOptions) => Promise<Prompt>;
     /**
      * Get all prompts in a project.
      *
      * @param args - Optional project and version configuration
      * @returns Array of prompts
      */
-    getAll: (args?: GetPromptOptions) => Promise<Prompt[]>
+    getAll: (args?: GetPromptOptions) => Promise<Prompt[]>;
     /**
      * Create a new prompt.
      *
@@ -300,7 +292,7 @@ class Latitude {
      * @param args - Optional configuration including initial content
      * @returns The created prompt
      */
-    create: (path: string, args?: GetOrCreatePromptOptions) => Promise<Prompt>
+    create: (path: string, args?: GetOrCreatePromptOptions) => Promise<Prompt>;
     /**
      * Get an existing prompt or create it if it doesn't exist.
      *
@@ -311,7 +303,7 @@ class Latitude {
     getOrCreate: (
       path: string,
       args?: GetOrCreatePromptOptions,
-    ) => Promise<Prompt>
+    ) => Promise<Prompt>;
     /**
      * Run a prompt and get a response.
      *
@@ -329,7 +321,7 @@ class Latitude {
     >(
       path: string,
       args: RunPromptOptions<Tools, S, Background>,
-    ) => Promise<RunPromptResult<S, Background> | undefined>
+    ) => Promise<RunPromptResult<S, Background> | undefined>;
     /**
      * Continue a conversation with additional messages.
      *
@@ -344,7 +336,7 @@ class Latitude {
       uuid: string,
       messages: Message[],
       args?: Omit<ChatOptions<Tools, S>, 'messages'>,
-    ) => Promise<GenerationResponse<S> | undefined>
+    ) => Promise<GenerationResponse<S> | undefined>;
     /**
      * Render a prompt template with parameters.
      *
@@ -354,7 +346,7 @@ class Latitude {
      */
     render: <M extends AdapterMessageType = PromptlMessage>(
       args: RenderPromptOptions<M>,
-    ) => Promise<{ config: Config; messages: M[] }>
+    ) => Promise<{ config: Config; messages: M[] }>;
     /**
      * Render a prompt chain with step-by-step processing.
      *
@@ -364,8 +356,8 @@ class Latitude {
      */
     renderChain: <M extends AdapterMessageType = PromptlMessage>(
       args: RenderChainOptions<M>,
-    ) => Promise<{ config: Config; messages: M[] }>
-  }
+    ) => Promise<{ config: Config; messages: M[] }>;
+  };
 
   /**
    * Run management operations for attaching to and stopping runs.
@@ -398,14 +390,14 @@ class Latitude {
     >(
       uuid: string,
       args?: AttachRunOptions<Tools, S>,
-    ) => Promise<GenerationResponse<S> | undefined>
+    ) => Promise<GenerationResponse<S> | undefined>;
     /**
      * Stop a running generation job.
      *
      * @param uuid - The job UUID to stop
      */
-    stop: (uuid: string) => Promise<void>
-  }
+    stop: (uuid: string) => Promise<void>;
+  };
 
   /**
    * Version management operations for prompt versioning.
@@ -435,14 +427,14 @@ class Latitude {
      * @param commitUuid - The commit UUID
      * @returns The version details
      */
-    get: (projectId: number, commitUuid: string) => Promise<Version>
+    get: (projectId: number, commitUuid: string) => Promise<Version>;
     /**
      * Get all versions for a project.
      *
      * @param projectId - Optional project ID (uses default if not specified)
      * @returns Array of versions
      */
-    getAll: (projectId?: number) => Promise<Version[]>
+    getAll: (projectId?: number) => Promise<Version[]>;
     /**
      * Create a new version.
      *
@@ -450,7 +442,7 @@ class Latitude {
      * @param opts - Optional project ID
      * @returns The created version
      */
-    create: (name: string, opts?: { projectId?: number }) => Promise<Version>
+    create: (name: string, opts?: { projectId?: number }) => Promise<Version>;
     /**
      * Push changes to create a new commit.
      *
@@ -463,13 +455,13 @@ class Latitude {
       projectId: number,
       baseCommitUuid: string,
       changes: Array<{
-        path: string
-        content: string
-        status: 'added' | 'modified' | 'deleted' | 'unchanged'
-        contentHash?: string
+        path: string;
+        content: string;
+        status: 'added' | 'modified' | 'deleted' | 'unchanged';
+        contentHash?: string;
       }>,
-    ) => Promise<{ commitUuid: string }>
-  }
+    ) => Promise<{ commitUuid: string }>;
+  };
 
   /**
    * Creates a new Latitude client instance.
@@ -499,8 +491,8 @@ class Latitude {
       },
     },
   ) {
-    const { source, retryMs } = { ...DEFAULT_INTERNAL, ...__internal }
-    const { gateway = DEFAULT_GATEWAY } = __internal
+    const { source, retryMs } = { ...DEFAULT_INTERNAL, ...__internal };
+    const { gateway = DEFAULT_GATEWAY } = __internal;
 
     this.options = {
       apiKey,
@@ -512,21 +504,21 @@ class Latitude {
         gateway,
         apiVersion: 'v3',
       }),
-    }
+    };
 
     // Wrap methods for instrumentation
-    this.wrapMethods()
+    this.wrapMethods();
 
     // Initialize evaluations namespace
     this.evaluations = {
       annotate: this.annotate.bind(this),
-    }
+    };
 
     // Initialize projects namespace
     this.projects = {
       getAll: this.getAllProjects.bind(this),
       create: this.createProject.bind(this),
-    }
+    };
 
     // Initialize prompts namespace
     this.prompts = {
@@ -538,13 +530,13 @@ class Latitude {
       chat: this.chat.bind(this),
       render: this.renderPrompt.bind(this),
       renderChain: this.renderChain.bind(this),
-    }
+    };
 
     // Initialize runs namespace
     this.runs = {
       attach: this.attachRun.bind(this),
       stop: this.stopRun.bind(this),
-    }
+    };
 
     // Initialize versions namespace
     this.versions = {
@@ -552,12 +544,12 @@ class Latitude {
       getAll: this.getAllVersions.bind(this),
       create: this.createVersion.bind(this),
       push: this.pushVersion.bind(this),
-    }
+    };
 
     // Initialize logs namespace
     this.logs = {
       create: this.createLog.bind(this),
-    }
+    };
   }
 
   /**
@@ -571,65 +563,65 @@ class Latitude {
    * ```
    */
   static instrument(instrumentation: Instrumentation): void {
-    Latitude.instrumentation = instrumentation
+    Latitude.instrumentation = instrumentation;
   }
 
   /**
    * Disable instrumentation.
    */
   static uninstrument(): void {
-    Latitude.instrumentation = undefined
+    Latitude.instrumentation = undefined;
   }
 
   private wrapMethods() {
-    const _renderChain = this.renderChain.bind(this)
+    const _renderChain = this.renderChain.bind(this);
     this.renderChain = ((...args: Parameters<typeof _renderChain>) => {
-      if (!Latitude.instrumentation) return _renderChain(...args)
-      return Latitude.instrumentation.wrapRenderChain(_renderChain, ...args)
-    }) as typeof _renderChain
+      if (!Latitude.instrumentation) return _renderChain(...args);
+      return Latitude.instrumentation.wrapRenderChain(_renderChain, ...args);
+    }) as typeof _renderChain;
 
-    const _renderStep = this.renderStep.bind(this)
+    const _renderStep = this.renderStep.bind(this);
     this.renderStep = ((...args: Parameters<typeof _renderStep>) => {
-      if (!Latitude.instrumentation) return _renderStep(...args)
-      return Latitude.instrumentation.wrapRenderStep(_renderStep, ...args)
-    }) as typeof _renderStep
+      if (!Latitude.instrumentation) return _renderStep(...args);
+      return Latitude.instrumentation.wrapRenderStep(_renderStep, ...args);
+    }) as typeof _renderStep;
 
-    const _renderCompletion = this.renderCompletion.bind(this)
+    const _renderCompletion = this.renderCompletion.bind(this);
     this.renderCompletion = ((
       ...args: Parameters<typeof _renderCompletion>
     ) => {
-      if (!Latitude.instrumentation) return _renderCompletion(...args)
+      if (!Latitude.instrumentation) return _renderCompletion(...args);
       return Latitude.instrumentation.wrapRenderCompletion(
         _renderCompletion,
         ...args,
-      )
-    }) as typeof _renderCompletion
+      );
+    }) as typeof _renderCompletion;
 
-    const _renderTool = this.renderTool.bind(this)
+    const _renderTool = this.renderTool.bind(this);
     this.renderTool = ((...args: Parameters<typeof _renderTool>) => {
-      if (!Latitude.instrumentation) return _renderTool(...args)
-      return Latitude.instrumentation.wrapRenderTool(_renderTool, ...args)
-    }) as typeof _renderTool
+      if (!Latitude.instrumentation) return _renderTool(...args);
+      return Latitude.instrumentation.wrapRenderTool(_renderTool, ...args);
+    }) as typeof _renderTool;
   }
 
   private async getPrompt(
     path: string,
     { projectId, versionUuid }: GetPromptOptions = {},
   ) {
-    projectId = projectId ?? this.options.projectId
-    if (!projectId) throw new Error('Project ID is required')
+    projectId = projectId ?? this.options.projectId;
+    if (!projectId) throw new Error('Project ID is required');
 
-    versionUuid = versionUuid ?? this.options.versionUuid
+    versionUuid = versionUuid ?? this.options.versionUuid;
 
     const response = await makeRequest({
       method: 'GET',
       handler: HandlerType.GetDocument,
       params: { projectId, versionUuid, path },
       options: this.options,
-    })
+    });
 
     if (!response.ok) {
-      const error = (await response.json()) as ApiErrorJsonResponse
+      const error = (await response.json()) as ApiErrorJsonResponse;
 
       throw new LatitudeApiError({
         status: response.status,
@@ -637,30 +629,30 @@ class Latitude {
         message: error.message,
         errorCode: error.errorCode,
         dbErrorRef: error.dbErrorRef,
-      })
+      });
     }
 
-    return (await response.json()) as Prompt
+    return (await response.json()) as Prompt;
   }
 
   private async getAllPrompts({
     projectId,
     versionUuid,
   }: GetPromptOptions = {}) {
-    projectId = projectId ?? this.options.projectId
-    if (!projectId) throw new Error('Project ID is required')
+    projectId = projectId ?? this.options.projectId;
+    if (!projectId) throw new Error('Project ID is required');
 
-    versionUuid = versionUuid ?? this.options.versionUuid
+    versionUuid = versionUuid ?? this.options.versionUuid;
 
     const response = await makeRequest({
       method: 'GET',
       handler: HandlerType.GetAllDocuments,
       params: { projectId, versionUuid },
       options: this.options,
-    })
+    });
 
     if (!response.ok) {
-      const error = (await response.json()) as ApiErrorJsonResponse
+      const error = (await response.json()) as ApiErrorJsonResponse;
 
       throw new LatitudeApiError({
         status: response.status,
@@ -668,20 +660,20 @@ class Latitude {
         message: error.message,
         errorCode: error.errorCode,
         dbErrorRef: error.dbErrorRef,
-      })
+      });
     }
 
-    return (await response.json()) as Prompt[]
+    return (await response.json()) as Prompt[];
   }
 
   private async createPrompt(
     path: string,
     { projectId, versionUuid, prompt }: GetOrCreatePromptOptions = {},
   ) {
-    projectId = projectId ?? this.options.projectId
-    if (!projectId) throw new Error('Project ID is required')
+    projectId = projectId ?? this.options.projectId;
+    if (!projectId) throw new Error('Project ID is required');
 
-    versionUuid = versionUuid ?? this.options.versionUuid
+    versionUuid = versionUuid ?? this.options.versionUuid;
 
     const response = await makeRequest({
       method: 'POST',
@@ -689,19 +681,19 @@ class Latitude {
       params: { projectId: Number(projectId), versionUuid },
       body: { path, prompt },
       options: this.options,
-    })
+    });
 
-    return (await response.json()) as Prompt
+    return (await response.json()) as Prompt;
   }
 
   private async getOrCreatePrompt(
     path: string,
     { projectId, versionUuid, prompt }: GetOrCreatePromptOptions = {},
   ) {
-    projectId = projectId ?? this.options.projectId
-    if (!projectId) throw new Error('Project ID is required')
+    projectId = projectId ?? this.options.projectId;
+    if (!projectId) throw new Error('Project ID is required');
 
-    versionUuid = versionUuid ?? this.options.versionUuid
+    versionUuid = versionUuid ?? this.options.versionUuid;
 
     const response = await makeRequest({
       method: 'POST',
@@ -709,20 +701,20 @@ class Latitude {
       params: { projectId, versionUuid },
       options: this.options,
       body: { path, prompt },
-    })
+    });
 
     if (!response.ok) {
-      const error = (await response.json()) as ApiErrorJsonResponse
+      const error = (await response.json()) as ApiErrorJsonResponse;
       throw new LatitudeApiError({
         status: response.status,
         serverResponse: JSON.stringify(error),
         message: error.message,
         errorCode: error.errorCode,
         dbErrorRef: error.dbErrorRef,
-      })
+      });
     }
 
-    return (await response.json()) as Prompt
+    return (await response.json()) as Prompt;
   }
 
   private async runPrompt<
@@ -741,17 +733,17 @@ class Latitude {
         signal: options.signal,
       },
       instrumentation: Latitude.instrumentation,
-    }
+    };
 
     if (_options.background) {
-      return backgroundRun<Tools, S>(path, _options) as unknown as RunPromptResult<S, Background> // prettier-ignore
+      return backgroundRun<Tools, S>(path, _options) as unknown as RunPromptResult<S, Background>; // prettier-ignore
     }
 
     if (_options.stream) {
-      return streamRun<Tools, S>(path, _options) as unknown as RunPromptResult<S, Background> // prettier-ignore
+      return streamRun<Tools, S>(path, _options) as unknown as RunPromptResult<S, Background>; // prettier-ignore
     }
 
-    return syncRun<Tools, S>(path, _options) as unknown as RunPromptResult<S, Background> // prettier-ignore
+    return syncRun<Tools, S>(path, _options) as unknown as RunPromptResult<S, Background>; // prettier-ignore
   }
 
   private async chat<
@@ -772,11 +764,11 @@ class Latitude {
         signal: options?.signal,
       },
       instrumentation: Latitude.instrumentation,
-    }
+    };
 
-    if (_options.stream) return streamChat<Tools, S>(uuid, _options)
+    if (_options.stream) return streamChat<Tools, S>(uuid, _options);
 
-    return syncChat<Tools, S>(uuid, _options)
+    return syncChat<Tools, S>(uuid, _options);
   }
 
   private async attachRun<
@@ -791,11 +783,11 @@ class Latitude {
         signal: options?.signal,
       },
       instrumentation: Latitude.instrumentation,
-    }
+    };
 
-    if (_options.stream) return streamAttach<Tools, S>(uuid, _options)
+    if (_options.stream) return streamAttach<Tools, S>(uuid, _options);
 
-    return syncAttach<Tools, S>(uuid, _options)
+    return syncAttach<Tools, S>(uuid, _options);
   }
 
   private async stopRun(uuid: string) {
@@ -804,10 +796,10 @@ class Latitude {
       handler: HandlerType.StopRun,
       params: { conversationUuid: uuid },
       options: this.options,
-    })
+    });
 
     if (!response.ok) {
-      const error = (await response.json()) as ApiErrorJsonResponse
+      const error = (await response.json()) as ApiErrorJsonResponse;
 
       throw new LatitudeApiError({
         status: response.status,
@@ -815,7 +807,7 @@ class Latitude {
         message: error.message,
         errorCode: error.errorCode,
         dbErrorRef: error.dbErrorRef,
-      })
+      });
     }
   }
 
@@ -824,17 +816,17 @@ class Latitude {
     parameters,
     adapter: _adapter,
   }: RenderPromptOptions<M>) {
-    const adapter = _adapter ?? getPromptlAdapterFromProvider(Providers.OpenAI)
+    const adapter = _adapter ?? getPromptlAdapterFromProvider(Providers.OpenAI);
     const { config, messages } = await render({
       prompt: prompt.content,
       parameters,
       adapter,
-    })
+    });
 
     return {
       config: adaptPromptConfigToProvider(config, adapter),
       messages,
-    }
+    };
   }
 
   private async createLog(
@@ -845,15 +837,15 @@ class Latitude {
       projectId,
       versionUuid,
     }: {
-      projectId?: number
-      versionUuid?: string
-      response?: string
+      projectId?: number;
+      versionUuid?: string;
+      response?: string;
     } = {},
   ) {
-    projectId = projectId ?? this.options.projectId
-    if (!projectId) throw new Error('Project ID is required')
+    projectId = projectId ?? this.options.projectId;
+    if (!projectId) throw new Error('Project ID is required');
 
-    versionUuid = versionUuid ?? this.options.versionUuid
+    versionUuid = versionUuid ?? this.options.versionUuid;
 
     const httpResponse = await makeRequest({
       method: 'POST',
@@ -861,7 +853,7 @@ class Latitude {
       params: { projectId, versionUuid },
       body: { path, messages, response },
       options: this.options,
-    })
+    });
 
     if (!httpResponse.ok) {
       throw new LatitudeApiError({
@@ -869,10 +861,10 @@ class Latitude {
         message: httpResponse.statusText,
         serverResponse: await httpResponse.text(),
         errorCode: ApiErrorCodes.HTTPException,
-      })
+      });
     }
 
-    return (await httpResponse.json()) as DocumentLog
+    return (await httpResponse.json()) as DocumentLog;
   }
 
   protected async renderCompletion<
@@ -883,52 +875,51 @@ class Latitude {
     onStep,
     adapter,
   }: {
-    provider: string
-    config: Config
-    prompt: string
-    parameters: Record<string, unknown>
-    messages: M[]
-    adapter: ProviderAdapter<M>
+    provider: string;
+    config: Config;
+    prompt: string;
+    parameters: Record<string, unknown>;
+    messages: M[];
+    adapter: ProviderAdapter<M>;
   } & Pick<RenderChainOptions<M>, 'onStep'>): Promise<{
-    messages: M[]
-    toolRequests: ToolRequest[]
+    messages: M[];
+    toolRequests: ToolRequest[];
   }> {
-    const response = await onStep({ messages, config })
-    const message: M =
-      typeof response === 'string'
-        ? adapter.fromPromptl({
-            config: {},
-            messages: [
+    const response = await onStep({ messages, config });
+    const message: M = typeof response === 'string'
+      ? adapter.fromPromptl({
+        config: {},
+        messages: [
+          {
+            role: PromptlMessageRole.assistant,
+            content: [
               {
-                role: PromptlMessageRole.assistant,
-                content: [
-                  {
-                    // @ts-expect-error - TODO(compiler): fix types
-                    type: 'text',
-                    text: response,
-                  },
-                ],
+                // @ts-expect-error - TODO(compiler): fix types
+                type: 'text',
+                text: response,
               },
             ],
-          }).messages[0]!
-        : ({
-            ...response,
-            role: PromptlMessageRole.assistant,
-          } as M)
+          },
+        ],
+      }).messages[0]!
+      : ({
+        ...response,
+        role: PromptlMessageRole.assistant,
+      } as M);
 
     const promptlMessage = adapter.toPromptl({
       messages: [message],
       config: {},
-    }).messages[0]!
+    }).messages[0]!;
 
     const toolRequests = promptlMessage.content.filter(
       (c) => c.type === 'tool-call',
-    )
+    );
 
     return {
       messages: [message],
       toolRequests,
-    }
+    };
   }
 
   protected async renderStep<M extends AdapterMessageType = PromptlMessage>({
@@ -941,13 +932,13 @@ class Latitude {
     tools,
     adapter,
   }: {
-    step: number
-    provider: string
-    config: Config
-    prompt: string
-    parameters: Record<string, unknown>
-    messages: M[]
-    adapter: ProviderAdapter<M>
+    step: number;
+    provider: string;
+    config: Config;
+    prompt: string;
+    parameters: Record<string, unknown>;
+    messages: M[];
+    adapter: ProviderAdapter<M>;
   } & Pick<RenderChainOptions<M>, 'onStep' | 'tools'>): Promise<{ messages: M[] }> {
     const completion = await this.renderCompletion({
       provider,
@@ -957,9 +948,9 @@ class Latitude {
       messages,
       adapter,
       onStep,
-    })
+    });
 
-    messages = completion.messages
+    messages = completion.messages;
 
     if (completion.toolRequests.length > 0) {
       messages = messages.concat(
@@ -968,10 +959,10 @@ class Latitude {
           tools: tools,
           adapter: adapter,
         }),
-      )
+      );
     }
 
-    return { messages }
+    return { messages };
   }
 
   protected async renderChain<M extends AdapterMessageType = PromptlMessage>({
@@ -981,24 +972,23 @@ class Latitude {
     onStep,
     tools,
   }: RenderChainOptions<M>): Promise<{ config: Config; messages: M[] }> {
-    const adapter = _adapter ?? getPromptlAdapterFromProvider(prompt.provider)
+    const adapter = _adapter ?? getPromptlAdapterFromProvider(prompt.provider);
     const chain = new Chain({
       prompt: prompt.content,
       parameters,
       adapter,
-    })
+    });
 
-    let lastResponse: M[]
-    let step = await chain.step(undefined)
-    let index = 1
+    let lastResponse: M[];
+    let step = await chain.step(undefined);
+    let index = 1;
 
     while (!step.completed) {
-      const config = adaptPromptConfigToProvider(step.config, adapter)
+      const config = adaptPromptConfigToProvider(step.config, adapter);
 
       const result = await this.renderStep({
         step: index,
-        provider:
-          (step.config.provider as string) || prompt.provider || 'unknown',
+        provider: (step.config.provider as string) || prompt.provider || 'unknown',
         config,
         prompt: prompt.content,
         parameters,
@@ -1006,10 +996,10 @@ class Latitude {
         onStep,
         tools,
         adapter,
-      })
-      lastResponse = result.messages
-      step = await chain.step(lastResponse)
-      index++
+      });
+      lastResponse = result.messages;
+      step = await chain.step(lastResponse);
+      index++;
     }
 
     // TODO(compiler): Resubmit messages if maxSteps is > 1 or type: agent
@@ -1018,25 +1008,25 @@ class Latitude {
     return {
       config: adaptPromptConfigToProvider(step.config, adapter),
       messages: step.messages,
-    }
+    };
   }
 
   protected async renderTool({
     tool,
     toolRequest,
   }: {
-    tool: RenderToolCalledFn<ToolSpec>[string]
-    toolRequest: ToolCallContent
+    tool: RenderToolCalledFn<ToolSpec>[string];
+    toolRequest: ToolCallContent;
   }): Promise<{ result: unknown; isError: boolean }> {
     try {
       const result = await tool(toolRequest.toolArguments, {
         id: toolRequest.toolCallId,
         name: toolRequest.toolName,
-      })
+      });
 
-      return { result, isError: false }
+      return { result, isError: false };
     } catch (error) {
-      return { result: (error as Error).message, isError: true }
+      return { result: (error as Error).message, isError: true };
     }
   }
 
@@ -1047,23 +1037,23 @@ class Latitude {
     tools,
     adapter,
   }: {
-    toolRequests: ToolRequest[]
-    tools?: RenderToolCalledFn<ToolSpec>
-    adapter: ProviderAdapter<M>
+    toolRequests: ToolRequest[];
+    tools?: RenderToolCalledFn<ToolSpec>;
+    adapter: ProviderAdapter<M>;
   }): Promise<M[]> {
     return Promise.all(
       toolRequests
         .filter((t) => t.toolName in (tools || {}))
         .map(async (t) => {
-          const tool = tools?.[t.toolName]
+          const tool = tools?.[t.toolName];
           if (!tool) {
-            throw new Error(`Handler for tool '${t.toolName}' not found`)
+            throw new Error(`Handler for tool '${t.toolName}' not found`);
           }
 
           const { result, isError } = await this.renderTool({
             tool: tool,
             toolRequest: t as unknown as ToolCallContent,
-          })
+          });
 
           return adapter.fromPromptl({
             messages: [
@@ -1081,9 +1071,9 @@ class Latitude {
               },
             ],
             config: {},
-          }).messages[0]!
+          }).messages[0]!;
         }),
-    )
+    );
   }
 
   private async getAllProjects() {
@@ -1091,9 +1081,9 @@ class Latitude {
       method: 'GET',
       handler: HandlerType.GetAllProjects,
       options: this.options,
-    })
+    });
 
-    return (await response.json()) as Project[]
+    return (await response.json()) as Project[];
   }
 
   private async createProject(name: string) {
@@ -1102,23 +1092,23 @@ class Latitude {
       handler: HandlerType.CreateProject,
       body: { name },
       options: this.options,
-    })
+    });
 
     if (!response.ok) {
-      const error = (await response.json()) as ApiErrorJsonResponse
+      const error = (await response.json()) as ApiErrorJsonResponse;
       throw new LatitudeApiError({
         status: response.status,
         serverResponse: JSON.stringify(error),
         message: error.message,
         errorCode: error.errorCode,
         dbErrorRef: error.dbErrorRef,
-      })
+      });
     }
 
     return (await response.json()) as {
-      project: Project
-      version: Version
-    }
+      project: Project;
+      version: Version;
+    };
   }
 
   private async annotate(
@@ -1126,11 +1116,11 @@ class Latitude {
     score: number,
     evaluationUuid: string,
     opts: {
-      reason?: string
-      versionUuid?: string
+      reason?: string;
+      versionUuid?: string;
     } = {},
   ) {
-    const { reason, versionUuid } = opts
+    const { reason, versionUuid } = opts;
     const response = await makeRequest({
       method: 'POST',
       handler: HandlerType.Annotate,
@@ -1144,10 +1134,10 @@ class Latitude {
         versionUuid: versionUuid ?? this.options.versionUuid,
       },
       options: this.options,
-    })
+    });
 
     if (!response.ok) {
-      const error = (await response.json()) as ApiErrorJsonResponse
+      const error = (await response.json()) as ApiErrorJsonResponse;
 
       throw new LatitudeApiError({
         status: response.status,
@@ -1155,18 +1145,18 @@ class Latitude {
         message: error.message,
         errorCode: error.errorCode,
         dbErrorRef: error.dbErrorRef,
-      })
+      });
     }
 
-    return (await response.json()) as PublicManualEvaluationResultV2
+    return (await response.json()) as PublicManualEvaluationResultV2;
   }
 
   private async createVersion(
     name: string,
     { projectId }: { projectId?: number } = {},
   ): Promise<Version> {
-    projectId = projectId ?? this.options.projectId
-    if (!projectId) throw new Error('Project ID is required')
+    projectId = projectId ?? this.options.projectId;
+    if (!projectId) throw new Error('Project ID is required');
 
     const response = await makeRequest({
       method: 'POST',
@@ -1176,9 +1166,9 @@ class Latitude {
       },
       body: { name },
       options: this.options,
-    })
+    });
     if (!response.ok) {
-      const error = (await response.json()) as ApiErrorJsonResponse
+      const error = (await response.json()) as ApiErrorJsonResponse;
 
       throw new LatitudeApiError({
         status: response.status,
@@ -1186,10 +1176,10 @@ class Latitude {
         message: error.message,
         errorCode: error.errorCode,
         dbErrorRef: error.dbErrorRef,
-      })
+      });
     }
 
-    return (await response.json()) as Version
+    return (await response.json()) as Version;
   }
 
   private async getVersion(
@@ -1201,10 +1191,10 @@ class Latitude {
       params: { projectId, versionUuid },
       method: 'GET',
       options: this.options,
-    })
+    });
 
     if (!response.ok) {
-      const error = (await response.json()) as ApiErrorJsonResponse
+      const error = (await response.json()) as ApiErrorJsonResponse;
 
       throw new LatitudeApiError({
         status: response.status,
@@ -1212,25 +1202,25 @@ class Latitude {
         message: error.message,
         errorCode: error.errorCode,
         dbErrorRef: error.dbErrorRef,
-      })
+      });
     }
 
-    return (await response.json()) as Version
+    return (await response.json()) as Version;
   }
 
   private async getAllVersions(projectId?: number): Promise<Version[]> {
-    projectId = projectId ?? this.options.projectId
-    if (!projectId) throw new Error('Project ID is required')
+    projectId = projectId ?? this.options.projectId;
+    if (!projectId) throw new Error('Project ID is required');
 
     const response = await makeRequest<HandlerType.GetAllVersions>({
       handler: HandlerType.GetAllVersions,
       params: { projectId },
       method: 'GET',
       options: this.options,
-    })
+    });
 
     if (!response.ok) {
-      const error = (await response.json()) as ApiErrorJsonResponse
+      const error = (await response.json()) as ApiErrorJsonResponse;
 
       throw new LatitudeApiError({
         status: response.status,
@@ -1238,20 +1228,20 @@ class Latitude {
         message: error.message,
         errorCode: error.errorCode,
         dbErrorRef: error.dbErrorRef,
-      })
+      });
     }
 
-    return (await response.json()) as Version[]
+    return (await response.json()) as Version[];
   }
 
   private async pushVersion(
     projectId: number,
     baseCommitUuid: string,
     changes: Array<{
-      path: string
-      content: string
-      status: 'added' | 'modified' | 'deleted' | 'unchanged'
-      contentHash?: string
+      path: string;
+      content: string;
+      status: 'added' | 'modified' | 'deleted' | 'unchanged';
+      contentHash?: string;
     }>,
   ): Promise<{ commitUuid: string }> {
     const response = await makeRequest({
@@ -1260,9 +1250,9 @@ class Latitude {
       params: { projectId, commitUuid: baseCommitUuid },
       body: { changes },
       options: this.options,
-    })
+    });
     if (!response.ok) {
-      const error = (await response.json()) as ApiErrorJsonResponse
+      const error = (await response.json()) as ApiErrorJsonResponse;
 
       throw new LatitudeApiError({
         status: response.status,
@@ -1270,17 +1260,17 @@ class Latitude {
         message: error.message,
         errorCode: error.errorCode,
         dbErrorRef: error.dbErrorRef,
-      })
+      });
     }
 
     const result = (await response.json()) as {
-      commitUuid: string
-      documentsProcessed: number
-    }
+      commitUuid: string;
+      documentsProcessed: number;
+    };
 
     return {
       commitUuid: result.commitUuid,
-    }
+    };
   }
 }
 
@@ -1289,19 +1279,19 @@ class Latitude {
 // =============================================================================
 
 /** Main Latitude client class. */
-export { Latitude }
+export { Latitude };
 
 /** Error class for API errors. */
-export { LatitudeApiError }
+export { LatitudeApiError };
 
 /** Enum of log source identifiers. */
-export { LogSources }
+export { LogSources };
 
 /** Enum of message roles (system, user, assistant, tool). */
-export { MessageRole }
+export { MessageRole };
 
 /** Provider adapters from promptl-ai. */
-export { Adapters } from 'promptl-ai'
+export { Adapters } from 'promptl-ai';
 
 /**
  * Type exports for TypeScript consumers.
@@ -1333,7 +1323,7 @@ export type {
   ToolHandler,
   /** Tool specification type. */
   ToolSpec,
-}
+};
 
 /**
  * Interface for implementing custom instrumentation.
@@ -1367,7 +1357,7 @@ export interface Instrumentation {
   wrapRenderChain<F extends Latitude['renderChain']>(
     fn: F,
     ...args: Parameters<F>
-  ): Promise<Awaited<ReturnType<F>>>
+  ): Promise<Awaited<ReturnType<F>>>;
 
   /**
    * Wrap the renderStep method for instrumentation.
@@ -1379,7 +1369,7 @@ export interface Instrumentation {
   wrapRenderStep<F extends Latitude['renderStep']>(
     fn: F,
     ...args: Parameters<F>
-  ): Promise<Awaited<ReturnType<F>>>
+  ): Promise<Awaited<ReturnType<F>>>;
 
   /**
    * Wrap the renderCompletion method for instrumentation.
@@ -1391,7 +1381,7 @@ export interface Instrumentation {
   wrapRenderCompletion<F extends Latitude['renderCompletion']>(
     fn: F,
     ...args: Parameters<F>
-  ): Promise<Awaited<ReturnType<F>>>
+  ): Promise<Awaited<ReturnType<F>>>;
 
   /**
    * Wrap the renderTool method for instrumentation.
@@ -1403,5 +1393,5 @@ export interface Instrumentation {
   wrapRenderTool<F extends Latitude['renderTool']>(
     fn: F,
     ...args: Parameters<F>
-  ): Promise<Awaited<ReturnType<F>>>
+  ): Promise<Awaited<ReturnType<F>>>;
 }

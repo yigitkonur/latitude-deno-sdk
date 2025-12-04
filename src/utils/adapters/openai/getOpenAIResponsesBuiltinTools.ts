@@ -1,66 +1,66 @@
-import { ClientTool, ToolInputMap } from '../types.ts'
+import { ClientTool, ToolInputMap } from '../types.ts';
 import {
   ComputerCallSchema,
   FileSearchToolSchema,
   OpenAIToolList,
   WebSearchToolSchema,
-} from '../../../constants/index.ts'
+} from '../../../constants/index.ts';
 
-import { ProviderToolsResult } from '../getProviderTools.ts'
+import { ProviderToolsResult } from '../getProviderTools.ts';
 
 export function getOpenAIResponsesBuiltinTools({
   tools,
 }: {
-  tools: ToolInputMap
+  tools: ToolInputMap;
 }): ProviderToolsResult {
   return Object.entries(tools).reduce(
     (acc, [name, definition]) => {
       if (name === 'openai') {
         // Under openai key in tools only can be an array of builtin tools
-        if (!Array.isArray(definition)) return acc
+        if (!Array.isArray(definition)) return acc;
 
         const builtinTools = definition.map((tool) => {
-          const type = tool.type
+          const type = tool.type;
           switch (type) {
             case 'web_search':
             case 'web_search_preview':
             case 'web_search_preview_2025_03_11': {
-              const result = WebSearchToolSchema.safeParse(tool)
+              const result = WebSearchToolSchema.safeParse(tool);
               if (result.error) {
-                throw new Error(result.error.message)
+                throw new Error(result.error.message);
               }
-              return result.data
+              return result.data;
             }
             case 'file_search': {
-              const result = FileSearchToolSchema.safeParse(tool)
+              const result = FileSearchToolSchema.safeParse(tool);
               if (result.error) {
-                throw new Error(result.error.message)
+                throw new Error(result.error.message);
               }
-              return result.data
+              return result.data;
             }
             case 'computer_use_preview': {
-              const result = ComputerCallSchema.safeParse(tool)
+              const result = ComputerCallSchema.safeParse(tool);
               if (result.error) {
-                throw new Error(result.error.message)
+                throw new Error(result.error.message);
               }
-              return result.data
+              return result.data;
             }
             default: {
-              throw new Error(`Unknown OpenAI tool type: ${type}`)
+              throw new Error(`Unknown OpenAI tool type: ${type}`);
             }
           }
-        })
+        });
 
-        acc.providerTools.push(...builtinTools)
-        return acc
+        acc.providerTools.push(...builtinTools);
+        return acc;
       }
 
-      acc.clientTools[name] = definition as ToolInputMap[string]
-      return acc
+      acc.clientTools[name] = definition as ToolInputMap[string];
+      return acc;
     },
     { clientTools: {}, providerTools: [] } as {
-      clientTools: ClientTool
-      providerTools: OpenAIToolList
+      clientTools: ClientTool;
+      providerTools: OpenAIToolList;
     },
-  )
+  );
 }

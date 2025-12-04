@@ -21,16 +21,16 @@ import {
   RunDocumentUrlParams,
   StopRunUrlParams,
   UrlParams,
-} from './types.ts'
-import { HEAD_COMMIT } from '../constants/index.ts'
+} from './types.ts';
+import { HEAD_COMMIT } from '../constants/index.ts';
 
 /** Parameters for resolving a route. */
 type ResolveParams<T extends HandlerType> = {
   /** The handler type to resolve. */
-  handler: T
+  handler: T;
   /** Optional URL parameters. */
-  params?: UrlParams<T>
-}
+  params?: UrlParams<T>;
+};
 
 /**
  * Configuration for the API gateway.
@@ -46,12 +46,12 @@ type ResolveParams<T extends HandlerType> = {
  */
 export type GatewayApiConfig = {
   /** Gateway hostname. */
-  host: string
+  host: string;
   /** Gateway port (undefined for default). */
-  port: number | undefined
+  port: number | undefined;
   /** Whether to use SSL/TLS. */
-  ssl: boolean
-}
+  ssl: boolean;
+};
 
 /**
  * Resolves API routes based on handler type and parameters.
@@ -62,130 +62,128 @@ export type GatewayApiConfig = {
  * @internal
  */
 export class RouteResolver {
-  private basePath: string
-  private apiVersion: string
+  private basePath: string;
+  private apiVersion: string;
 
   constructor({
     apiVersion = 'v3',
     gateway,
   }: {
-    apiVersion?: string
-    gateway: GatewayApiConfig
+    apiVersion?: string;
+    gateway: GatewayApiConfig;
   }) {
-    const protocol = gateway.ssl ? 'https' : 'http'
-    const domain = gateway.port
-      ? `${gateway.host}:${gateway.port}`
-      : gateway.host
-    this.basePath = `${protocol}://${domain}`
-    this.apiVersion = apiVersion
+    const protocol = gateway.ssl ? 'https' : 'http';
+    const domain = gateway.port ? `${gateway.host}:${gateway.port}` : gateway.host;
+    this.basePath = `${protocol}://${domain}`;
+    this.apiVersion = apiVersion;
   }
 
   // TODO: FIXME: This can be done without asserting types
   resolve<T extends HandlerType>({ handler, params }: ResolveParams<T>): string {
     switch (handler) {
       case HandlerType.GetDocument: {
-        const p = params as GetDocumentUrlParams
+        const p = params as GetDocumentUrlParams;
         return this.projects
           .project(p.projectId)
           .versions.version(p.versionUuid ?? 'live')
-          .documents.document(p.path)
+          .documents.document(p.path);
       }
       case HandlerType.GetAllDocuments: {
-        const p = params as GetAllDocumentsParams
+        const p = params as GetAllDocumentsParams;
         return this.projects
           .project(p.projectId)
-          .versions.version(p.versionUuid ?? 'live').documents.root
+          .versions.version(p.versionUuid ?? 'live').documents.root;
       }
       case HandlerType.GetOrCreateDocument: {
-        const p = params as GetOrCreateDocumentUrlParams
+        const p = params as GetOrCreateDocumentUrlParams;
         return this.projects
           .project(p.projectId)
-          .versions.version(p.versionUuid ?? 'live').documents.getOrCreate
+          .versions.version(p.versionUuid ?? 'live').documents.getOrCreate;
       }
       case HandlerType.CreateDocument: {
-        const p = params as GetOrCreateDocumentUrlParams
+        const p = params as GetOrCreateDocumentUrlParams;
         return this.projects
           .project(p.projectId)
-          .versions.version(p.versionUuid ?? 'live').documents.root
+          .versions.version(p.versionUuid ?? 'live').documents.root;
       }
       case HandlerType.RunDocument: {
-        const p = params as RunDocumentUrlParams
+        const p = params as RunDocumentUrlParams;
         return this.projects
           .project(p.projectId)
-          .versions.version(p.versionUuid ?? 'live').documents.run
+          .versions.version(p.versionUuid ?? 'live').documents.run;
       }
       case HandlerType.Chat: {
-        const p = params as ChatUrlParams
-        return this.conversations().chat(p.conversationUuid)
+        const p = params as ChatUrlParams;
+        return this.conversations().chat(p.conversationUuid);
       }
       case HandlerType.StopRun: {
-        const p = params as StopRunUrlParams
-        return this.conversations().stop(p.conversationUuid)
+        const p = params as StopRunUrlParams;
+        return this.conversations().stop(p.conversationUuid);
       }
       case HandlerType.AttachRun: {
-        const p = params as AttachRunUrlParams
-        return this.conversations().attach(p.conversationUuid)
+        const p = params as AttachRunUrlParams;
+        return this.conversations().attach(p.conversationUuid);
       }
       case HandlerType.Annotate: {
-        const p = params as AnnotateUrlParams
+        const p = params as AnnotateUrlParams;
         return this.conversations().annotate(
           p.conversationUuid,
           p.evaluationUuid,
-        )
+        );
       }
       case HandlerType.GetAllProjects:
-        return this.projects.root
+        return this.projects.root;
       case HandlerType.CreateProject:
-        return this.projects.root
+        return this.projects.root;
       case HandlerType.CreateVersion:
         return this.projects.project(
           (params as CreateVersionUrlParams).projectId,
-        ).versions.root
+        ).versions.root;
       case HandlerType.GetVersion:
         return this.projects
           .project((params as GetversionUrlParams).projectId)
-          .versions.version((params as GetversionUrlParams).versionUuid).root
+          .versions.version((params as GetversionUrlParams).versionUuid).root;
       case HandlerType.GetAllVersions:
         return this.projects.project(
           (params as GetAllVersionsUrlParams).projectId,
-        ).versions.root
+        ).versions.root;
       case HandlerType.PushVersion:
         return this.projects
           .project((params as PushVersionUrlParams).projectId)
-          .versions.version((params as PushVersionUrlParams).commitUuid).push
+          .versions.version((params as PushVersionUrlParams).commitUuid).push;
       case HandlerType.Log:
         return this.projects
           .project((params as RunDocumentUrlParams).projectId)
           .versions.version(
             (params as RunDocumentUrlParams).versionUuid ?? HEAD_COMMIT,
-          ).documents.logs
+          ).documents.logs;
       case HandlerType.ToolResults:
-        return this.tools().results
+        return this.tools().results;
       default:
-        throw new Error(`Unknown handler: ${handler}`)
+        throw new Error(`Unknown handler: ${handler}`);
     }
   }
 
   private tools() {
-    const base = `${this.baseUrl}/tools`
+    const base = `${this.baseUrl}/tools`;
     return {
       results: `${base}/results`,
-    }
+    };
   }
 
   private conversations() {
-    const base = `${this.baseUrl}/conversations`
+    const base = `${this.baseUrl}/conversations`;
     return {
       chat: (uuid: string) => `${base}/${uuid}/chat`,
       stop: (uuid: string) => `${base}/${uuid}/stop`,
       attach: (uuid: string) => `${base}/${uuid}/attach`,
       annotate: (uuid: string, evaluationUuid: string) =>
         `${base}/${uuid}/evaluations/${evaluationUuid}/annotate`,
-    }
+    };
   }
 
   private get projects() {
-    const base = `${this.baseUrl}/projects`
+    const base = `${this.baseUrl}/projects`;
     return {
       root: base,
       project: (projectId: number) => ({
@@ -200,17 +198,18 @@ export class RouteResolver {
               root: `${this.baseUrl}/projects/${projectId}/versions/${versionUuid}/documents`,
               document: (path: string) =>
                 `${this.baseUrl}/projects/${projectId}/versions/${versionUuid}/documents/${path}`,
-              getOrCreate: `${this.baseUrl}/projects/${projectId}/versions/${versionUuid}/documents/get-or-create`,
+              getOrCreate:
+                `${this.baseUrl}/projects/${projectId}/versions/${versionUuid}/documents/get-or-create`,
               run: `${this.baseUrl}/projects/${projectId}/versions/${versionUuid}/documents/run`,
               logs: `${this.baseUrl}/projects/${projectId}/versions/${versionUuid}/documents/logs`,
             },
           }),
         },
       }),
-    }
+    };
   }
 
   private get baseUrl() {
-    return `${this.basePath}/api/${this.apiVersion}`
+    return `${this.basePath}/api/${this.apiVersion}`;
   }
 }

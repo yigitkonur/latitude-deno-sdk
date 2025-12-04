@@ -13,26 +13,25 @@ import {
   DbErrorRef,
   LatitudeErrorCodes,
   RunErrorCodes,
-} from './errorConstants.ts'
+} from './errorConstants.ts';
 
 function getErrorMessage({
   status,
   message,
   errorCode,
 }: {
-  status: number
-  message: string
-  errorCode: ApiResponseCode
+  status: number;
+  message: string;
+  errorCode: ApiResponseCode;
 }) {
-  const httpExeception = ApiErrorCodes.HTTPException
-  const internalServerError = ApiErrorCodes.InternalServerError
-  const isUnexpectedError =
-    errorCode === httpExeception || errorCode === internalServerError
+  const httpExeception = ApiErrorCodes.HTTPException;
+  const internalServerError = ApiErrorCodes.InternalServerError;
+  const isUnexpectedError = errorCode === httpExeception || errorCode === internalServerError;
   if (isUnexpectedError) {
-    return `Unexpected API Error: ${status} ${message}`
+    return `Unexpected API Error: ${status} ${message}`;
   }
 
-  return message
+  return message;
 }
 
 /**
@@ -59,15 +58,15 @@ function getErrorMessage({
  */
 export class LatitudeApiError extends Error {
   /** HTTP status code from the API response. */
-  status: number
+  status: number;
   /** Human-readable error message. */
-  override message: string
+  override message: string;
   /** Raw server response body. */
-  serverResponse: string
+  serverResponse: string;
   /** Machine-readable error code for programmatic handling. */
-  errorCode: ApiResponseCode
+  errorCode: ApiResponseCode;
   /** Optional reference to the database entity related to this error. */
-  dbErrorRef?: DbErrorRef
+  dbErrorRef?: DbErrorRef;
 
   /**
    * Creates a new LatitudeApiError instance.
@@ -86,22 +85,22 @@ export class LatitudeApiError extends Error {
     errorCode,
     dbErrorRef,
   }: {
-    status: number
-    message: string
-    serverResponse: string
-    errorCode: ApiResponseCode
-    dbErrorRef?: DbErrorRef
+    status: number;
+    message: string;
+    serverResponse: string;
+    errorCode: ApiResponseCode;
+    dbErrorRef?: DbErrorRef;
   }) {
-    const msg = getErrorMessage({ status, message, errorCode })
-    super(message)
+    const msg = getErrorMessage({ status, message, errorCode });
+    super(message);
 
-    this.status = status
-    this.message = msg
-    this.serverResponse = serverResponse
-    this.errorCode = errorCode
-    this.dbErrorRef = dbErrorRef
+    this.status = status;
+    this.message = msg;
+    this.serverResponse = serverResponse;
+    this.errorCode = errorCode;
+    this.dbErrorRef = dbErrorRef;
   }
 }
 
-export type { DbErrorRef, ApiErrorJsonResponse, ApiResponseCode }
-export { RunErrorCodes, ApiErrorCodes, LatitudeErrorCodes }
+export type { ApiErrorJsonResponse, ApiResponseCode, DbErrorRef };
+export { ApiErrorCodes, LatitudeErrorCodes, RunErrorCodes };

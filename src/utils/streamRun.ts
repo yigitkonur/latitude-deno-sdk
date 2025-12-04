@@ -1,21 +1,16 @@
-import { LatitudeApiError } from './errors.ts'
-import { handleStream } from './handleStream.ts'
-import { makeRequest } from './request.ts'
+import { LatitudeApiError } from './errors.ts';
+import { handleStream } from './handleStream.ts';
+import { makeRequest } from './request.ts';
+import { HandlerType, RunPromptOptions, SDKOptions, ToolSpec } from './types.ts';
 import {
-  HandlerType,
-  RunPromptOptions,
-  SDKOptions,
-  ToolSpec,
-} from './types.ts'
-import {
-  AssertedStreamType,
-  ProviderData,
   ApiErrorCodes,
+  AssertedStreamType,
   LatitudeErrorCodes,
-} from '../constants/index.ts'
-import type { ApiErrorJsonResponse } from '../constants/index.ts'
+  ProviderData,
+} from '../constants/index.ts';
+import type { ApiErrorJsonResponse } from '../constants/index.ts';
 
-import { GenerationResponse } from './types.ts'
+import { GenerationResponse } from './types.ts';
 
 export async function streamRun<
   Tools extends ToolSpec,
@@ -34,10 +29,10 @@ export async function streamRun<
     onError,
     options,
   }: RunPromptOptions<Tools, S, false> & {
-    options: SDKOptions
+    options: SDKOptions;
   },
 ): Promise<GenerationResponse<S> | undefined> {
-  projectId = projectId ?? options.projectId
+  projectId = projectId ?? options.projectId;
 
   if (!projectId) {
     const error = new LatitudeApiError({
@@ -45,12 +40,12 @@ export async function streamRun<
       message: 'Project ID is required',
       serverResponse: 'Project ID is required',
       errorCode: LatitudeErrorCodes.NotFoundError,
-    })
-    onError?.(error)
-    return Promise.reject(error)
+    });
+    onError?.(error);
+    return Promise.reject(error);
   }
 
-  versionUuid = versionUuid ?? options.versionUuid
+  versionUuid = versionUuid ?? options.versionUuid;
 
   try {
     const response = await makeRequest({
@@ -67,51 +62,51 @@ export async function streamRun<
         tools: waitForTools(tools),
         userMessage,
       },
-    })
+    });
 
     if (!response.ok) {
-      const json = (await response.json()) as ApiErrorJsonResponse
+      const json = (await response.json()) as ApiErrorJsonResponse;
       const error = new LatitudeApiError({
         status: response.status,
         serverResponse: response.statusText,
         message: json.message,
         errorCode: json.errorCode,
         dbErrorRef: json.dbErrorRef,
-      })
-      onError?.(error)
-      return
+      });
+      onError?.(error);
+      return;
     }
 
     const finalResponse = await handleStream<S>({
-      body: response.body!,  // Already a Web ReadableStream in Deno
+      body: response.body!, // Already a Web ReadableStream in Deno
       onEvent,
       onError,
       onToolCall: handleToolCallFactory({
         tools,
         options,
       }),
-    })
+    });
 
-    if (!finalResponse) return
+    if (!finalResponse) return;
 
-    onFinished?.(finalResponse)
+    onFinished?.(finalResponse);
 
-    return finalResponse
+    return finalResponse;
   } catch (e) {
-    let error = e as LatitudeApiError
+    let error = e as LatitudeApiError;
 
     if (!(e instanceof LatitudeApiError)) {
-      const err = e as Error
+      const err = e as Error;
       error = new LatitudeApiError({
         status: 500,
         message: err.message,
         serverResponse: err.stack ?? '',
         errorCode: ApiErrorCodes.InternalServerError,
-      })
+      });
     }
 
-    onError?.(error)
-    return
+    onError?.(error);
+    return;
   }
 }
 
@@ -119,25 +114,25 @@ export function handleToolCallFactory<T extends ToolSpec>({
   tools,
   options,
 }: {
-  tools?: RunPromptOptions<T>['tools']
-  options: SDKOptions
+  tools?: RunPromptOptions<T>['tools'];
+  options: SDKOptions;
 }): (data: ProviderData) => Promise<void> {
   return async (data: ProviderData): Promise<void> => {
-    if (data.type !== 'tool-call') return
+    if (data.type !== 'tool-call') return;
 
     // Explicitly cast to the specific tool call type to satisfy TS
-    const toolCall = data as Extract<ProviderData, { type: 'tool-call' }>
+    const toolCall = data as Extract<ProviderData, { type: 'tool-call' }>;
 
-    const toolName = toolCall.toolName as keyof T
-    const tool = tools?.[toolName]
+    const toolName = toolCall.toolName as keyof T;
+    const tool = tools?.[toolName];
     // NOTE: If handler not found, do not handle tool call because it could be a built-in tool
-    if (!tool) return
+    if (!tool) return;
 
     const result = await tool(toolCall.args as T[typeof toolName], {
       id: toolCall.toolCallId,
       name: toolCall.toolName,
       arguments: toolCall.args,
-    })
+    });
 
     const response = await makeRequest({
       method: 'POST',
@@ -147,14 +142,14 @@ export function handleToolCallFactory<T extends ToolSpec>({
         result,
       },
       options,
-    })
+    });
 
     if (!response.ok) {
-      const json = (await response.json()) as ApiErrorJsonResponse
+      const json = (await response.json()) as ApiErrorJsonResponse;
       const message = `Failed to execute tool ${data.toolName}.
 Latitude API returned the following error:
 
-${json.message}`
+${json.message}`;
 
       const error = new LatitudeApiError({
         status: response.status,
@@ -162,13 +157,13 @@ ${json.message}`
         message,
         errorCode: json.errorCode,
         dbErrorRef: json.dbErrorRef,
-      })
+      });
 
-      throw error
+      throw error;
     }
-  }
+  };
 }
 
 export function waitForTools(tools?: Record<string, unknown>): string[] {
-  return Object.keys(tools ?? {})
+  return Object.keys(tools ?? {});
 }

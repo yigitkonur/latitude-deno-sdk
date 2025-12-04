@@ -1,6 +1,6 @@
-import { LatitudeApiError } from './errors.ts'
-import { makeRequest } from './request.ts'
-import { waitForTools } from './streamRun.ts'
+import { LatitudeApiError } from './errors.ts';
+import { makeRequest } from './request.ts';
+import { waitForTools } from './streamRun.ts';
 import {
   GenerationResponse,
   HandlerType,
@@ -8,13 +8,9 @@ import {
   RunSyncAPIResponse,
   SDKOptions,
   ToolSpec,
-} from './types.ts'
-import {
-  AssertedStreamType,
-  ApiErrorCodes,
-  LatitudeErrorCodes,
-} from '../constants/index.ts'
-import type { ApiErrorJsonResponse } from '../constants/index.ts'
+} from './types.ts';
+import { ApiErrorCodes, AssertedStreamType, LatitudeErrorCodes } from '../constants/index.ts';
+import type { ApiErrorJsonResponse } from '../constants/index.ts';
 
 export async function syncRun<
   Tools extends ToolSpec,
@@ -32,10 +28,10 @@ export async function syncRun<
     onError,
     options,
   }: RunPromptOptions<Tools, S, false> & {
-    options: SDKOptions
+    options: SDKOptions;
   },
 ): Promise<GenerationResponse<S> | undefined> {
-  projectId = projectId ?? options.projectId
+  projectId = projectId ?? options.projectId;
 
   if (!projectId) {
     const error = new LatitudeApiError({
@@ -43,13 +39,13 @@ export async function syncRun<
       message: 'Project ID is required',
       serverResponse: 'Project ID is required',
       errorCode: LatitudeErrorCodes.NotFoundError,
-    })
+    });
 
-    onError?.(error)
-    return Promise.reject(error)
+    onError?.(error);
+    return Promise.reject(error);
   }
 
-  versionUuid = versionUuid ?? options.versionUuid
+  versionUuid = versionUuid ?? options.versionUuid;
 
   const response = await makeRequest({
     method: 'POST',
@@ -65,12 +61,12 @@ export async function syncRun<
       tools: waitForTools(tools),
       userMessage,
     },
-  })
+  });
 
   if (!response.ok) {
-    let json: ApiErrorJsonResponse | undefined
+    let json: ApiErrorJsonResponse | undefined;
     try {
-      json = (await response.json()) as ApiErrorJsonResponse
+      json = (await response.json()) as ApiErrorJsonResponse;
     } catch (_error) {
       // Do nothing, sometimes gateway returns html instead of json (502/504 errors)
     }
@@ -81,15 +77,15 @@ export async function syncRun<
       message: json?.message ?? response.statusText,
       errorCode: json?.errorCode ?? ApiErrorCodes.InternalServerError,
       dbErrorRef: json?.dbErrorRef,
-    })
+    });
 
-    onError?.(error)
-    return !onError ? Promise.reject(error) : Promise.resolve(undefined)
+    onError?.(error);
+    return !onError ? Promise.reject(error) : Promise.resolve(undefined);
   }
 
-  const finalResponse = (await response.json()) as RunSyncAPIResponse<S>
+  const finalResponse = (await response.json()) as RunSyncAPIResponse<S>;
 
-  onFinished?.(finalResponse)
+  onFinished?.(finalResponse);
 
-  return Promise.resolve(finalResponse)
+  return Promise.resolve(finalResponse);
 }

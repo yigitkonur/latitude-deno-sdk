@@ -71,4 +71,4 @@
  * @see {@link https://docs.latitude.so | Latitude Documentation}
  */
 
-export * from './index.ts'
+export * from './index.ts';

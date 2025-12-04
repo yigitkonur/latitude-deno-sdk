@@ -1,12 +1,12 @@
-import { ProviderToolsResult } from '../getProviderTools.ts'
+import { ProviderToolsResult } from '../getProviderTools.ts';
 
 /** OpenAI function tool definition. */
 export type OpenAIFunctionTool = {
-  name: string
-  description: string | undefined
-  type: string
-  parameters: unknown
-}
+  name: string;
+  description: string | undefined;
+  type: string;
+  parameters: unknown;
+};
 
 export function getOpenAIResponseTools({
   clientTools,
@@ -17,7 +17,7 @@ export function getOpenAIResponseTools({
     description: definition.description,
     type: 'function',
     parameters: definition.parameters,
-  }))
+  }));
 
-  return [...client, ...providerTools] as (OpenAIFunctionTool | unknown)[]
+  return [...client, ...providerTools] as (OpenAIFunctionTool | unknown)[];
 }
