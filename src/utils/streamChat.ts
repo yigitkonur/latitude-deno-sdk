@@ -1,0 +1,81 @@
+import { LatitudeApiError } from './errors.ts'
+import { handleStream } from './handleStream.ts'
+import { makeRequest } from './request.ts'
+import {
+  ChatOptionsWithSDKOptions,
+  ChatSyncAPIResponse,
+  HandlerType,
+  ToolSpec,
+} from './types.ts'
+import {
+  ApiErrorCodes,
+  AssertedStreamType,
+} from '../constants/index.ts'
+import type { ApiErrorJsonResponse } from '../constants/index.ts'
+import { handleToolCallFactory, waitForTools } from './streamRun.ts'
+
+export async function streamChat<
+  Tools extends ToolSpec,
+  S extends AssertedStreamType = 'text',
+>(
+  uuid: string,
+  {
+    messages,
+    onEvent,
+    onFinished,
+    onError,
+    tools,
+    options,
+  }: ChatOptionsWithSDKOptions<Tools, S>,
+): Promise<ChatSyncAPIResponse<S> | undefined> {
+  try {
+    const response = await makeRequest({
+      method: 'POST',
+      handler: HandlerType.Chat,
+      params: { conversationUuid: uuid },
+      options: options,
+      body: { messages, tools: waitForTools(tools), stream: true },
+    })
+
+    if (!response.ok) {
+      const json = (await response.json()) as ApiErrorJsonResponse
+      const error = new LatitudeApiError({
+        status: response.status,
+        serverResponse: JSON.stringify(json),
+        message: json.message,
+        errorCode: json.errorCode,
+        dbErrorRef: json.dbErrorRef,
+      })
+
+      onError?.(error)
+      return !onError ? Promise.reject(error) : Promise.resolve(undefined)
+    }
+
+    const finalResponse = await handleStream<S>({
+      body: response.body!,  // Already a Web ReadableStream in Deno
+      onEvent,
+      onError,
+      onToolCall: handleToolCallFactory({
+        tools,
+        options,
+      }),
+    })
+
+    if (!finalResponse) return
+
+    onFinished?.(finalResponse)
+
+    return finalResponse
+  } catch (e) {
+    const err = e as Error
+    const error = new LatitudeApiError({
+      status: 500,
+      message: err.message,
+      serverResponse: err.message,
+      errorCode: ApiErrorCodes.InternalServerError,
+    })
+
+    onError?.(error)
+    return !onError ? Promise.reject(error) : Promise.resolve(undefined)
+  }
+}
