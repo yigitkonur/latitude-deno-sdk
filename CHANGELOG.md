@@ -1,11 +1,40 @@
 # Changelog
 
-All notable changes to the TypeScript SDK will be documented in this file.
+Latitude Deno SDK - Community fork of [@latitude-data/sdk](https://www.npmjs.com/package/@latitude-data/sdk).
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [1.0.0] - 2025-12-04
 
-## [Unreleased]
+### 🎉 Initial Deno Release
+
+Community fork of the official Latitude Node.js SDK (v5.2.2), rebuilt for Deno and Supabase Edge Functions.
+
+#### Why This Fork?
+
+The official [@latitude-data/sdk](https://www.npmjs.com/package/@latitude-data/sdk) is built for Node.js. This fork makes it work natively in Deno and Supabase Edge Functions without any Node.js polyfills.
+
+#### Changes from Node.js SDK
+
+- **Replaced** `node-fetch` → native `fetch()`
+- **Replaced** `process.env` → `Deno.env`
+- **Replaced** Node.js `Readable` streams → Web `ReadableStream`
+- **Bundled** `@latitude-data/constants` for standalone operation
+- **Removed** build tooling (rollup, vitest, tsconfig)
+
+#### Features
+
+All features from the original SDK work:
+
+- `prompts.run()` - Execute prompts with streaming
+- `prompts.chat()` - Continue conversations
+- `prompts.get/getAll/create/getOrCreate()` - Prompt management
+- `logs.create()` - Logging
+- `evaluations.trigger/createResult()` - Evaluations
+
+---
+
+## Original Node.js SDK Changelog
+
+The following entries are from the original Node.js SDK this fork is based on.
 
 ## [5.2.2] - 2025-11-13
 

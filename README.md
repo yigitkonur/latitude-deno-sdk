@@ -1,13 +1,15 @@
-# Latitude SDK for Deno
+# Latitude Deno SDK
 
-The official Latitude SDK for Deno, Supabase Edge Functions, and modern JavaScript runtimes.
+Community fork of the official [Latitude Node.js SDK](https://www.npmjs.com/package/@latitude-data/sdk), rebuilt for Deno and Supabase Edge Functions.
+
+[![JSR](https://jsr.io/badges/@yigitkonur/latitude-deno-sdk)](https://jsr.io/@yigitkonur/latitude-deno-sdk)
 
 ## Installation
 
-### JSR (recommended)
+### JSR
 
 ```bash
-deno add @latitude-data/sdk
+deno add @yigitkonur/latitude-deno-sdk
 ```
 
 ### Import Map
@@ -15,7 +17,7 @@ deno add @latitude-data/sdk
 ```json
 {
   "imports": {
-    "@latitude-data/sdk": "jsr:@latitude-data/sdk"
+    "@yigitkonur/latitude-deno-sdk": "jsr:@yigitkonur/latitude-deno-sdk"
   }
 }
 ```
@@ -23,7 +25,7 @@ deno add @latitude-data/sdk
 ## Quick Start
 
 ```typescript
-import { Latitude } from '@latitude-data/sdk'
+import { Latitude } from '@yigitkonur/latitude-deno-sdk'
 
 const latitude = new Latitude(Deno.env.get('LATITUDE_API_KEY')!)
 
@@ -61,7 +63,7 @@ await latitude.prompts.run('my-prompt', {
 ### Supabase Edge Function
 
 ```typescript
-import { Latitude } from '@latitude-data/sdk'
+import { Latitude } from '@yigitkonur/latitude-deno-sdk'
 
 Deno.serve(async (req) => {
   const latitude = new Latitude(Deno.env.get('LATITUDE_API_KEY')!)
