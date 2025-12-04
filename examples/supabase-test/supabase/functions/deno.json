@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "@yigitkonur/latitude-deno-sdk": "jsr:@yigitkonur/latitude-deno-sdk@1.0.0"
+  }
+}
