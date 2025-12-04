@@ -138,27 +138,45 @@ if (result?.uuid) {
 
 ## Tested Functionality
 
-All SDK methods verified with Supabase Edge Functions:
+**20 tests across 8 categories** - All SDK methods verified with Supabase Edge Functions:
 
-| Test | Status | Description |
-|------|--------|-------------|
-| `prompts.getAll()` | ✅ | List all prompts |
-| `prompts.get(path)` | ✅ | Get single prompt |
-| `prompts.run()` sync | ✅ | Non-streaming execution |
-| `prompts.run()` stream | ✅ | Streaming with callbacks |
-| `prompts.run()` structured | ✅ | JSON schema output |
-| `prompts.chat()` | ✅ | Conversation continuation |
-| `logs.create()` | ✅ | Create log entries |
-| SDK initialization | ✅ | Various config options |
-| Error handling | ✅ | Invalid prompt errors |
-| Concurrent requests | ✅ | Parallel execution |
+### Core API Tests
+| Category | Tests | Description |
+|----------|-------|-------------|
+| **prompts** | 6 | getAll, get, run (sync/stream/structured), chat |
+| **projects** | 1 | getAll |
+| **versions** | 2 | getAll, get |
+| **logs** | 1 | create |
 
-Run example tests:
+### Advanced Tests
+| Category | Tests | Description |
+|----------|-------|-------------|
+| **streaming** | 3 | Incremental JSON parsing, timing analysis, byte analysis |
+| **errors** | 3 | Invalid path, invalid project, missing params |
+| **config** | 2 | SDK initialization, namespace completeness |
+| **performance** | 2 | Parallel (5x), sequential vs parallel (156% faster) |
 
+### All 20 SDK Methods Verified
+```
+prompts:     get, getAll, create, getOrCreate, run, chat, render, renderChain
+projects:    getAll, create
+versions:    get, getAll, create, push
+runs:        attach, stop
+logs:        create
+evaluations: annotate
+```
+
+### Run Tests
 ```bash
 cd examples/supabase-test/supabase/functions
 NODE_ENV=production deno run --allow-net --allow-env --import-map=deno.json latitude-test/index.ts
-# Then visit http://localhost:8000?action=all
+
+# All tests
+curl "http://localhost:8000?action=all"
+
+# By category
+curl "http://localhost:8000?category=streaming"
+curl "http://localhost:8000?category=performance"
 ```
 
 ## Development
