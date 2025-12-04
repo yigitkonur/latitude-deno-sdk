@@ -1,15 +1,15 @@
 /**
  * Example: RAG (Retrieval-Augmented Generation)
- * 
+ *
  * Demonstrates how to implement RAG pattern with:
  * 1. Tool-based retrieval
  * 2. Vector database integration (simulated)
  * 3. Context injection into prompts
- * 
+ *
  * Prerequisites:
  * - A prompt configured with a retrieval tool
  * - Vector database (Pinecone, Supabase Vector, etc.)
- * 
+ *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 \
  *   deno run --allow-env --allow-net examples/rag_retrieval.ts

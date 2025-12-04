@@ -1,11 +1,14 @@
 /**
  * Fetch mocking utilities for Deno tests.
- * 
+ *
  * Provides globalThis.fetch override with automatic restore pattern,
  * following Supabase-js and Deno std testing conventions.
  */
 
-export type MockHandler = (input: string | URL | Request, init?: RequestInit) => Promise<Response> | Response;
+export type MockHandler = (
+  input: string | URL | Request,
+  init?: RequestInit,
+) => Promise<Response> | Response;
 
 export interface MockFetchOptions {
   /** Map of URL patterns to responses */
@@ -18,7 +21,7 @@ export interface MockFetchOptions {
 
 /**
  * Mock globalThis.fetch with pattern-based response matching.
- * 
+ *
  * @example
  * ```ts
  * const restore = mockFetch({
@@ -27,7 +30,7 @@ export interface MockFetchOptions {
  *     ['/api/run', new Response('stream data', { headers: { 'Content-Type': 'text/event-stream' } })]
  *   ])
  * });
- * 
+ *
  * try {
  *   await sdk.prompts.run('test');
  * } finally {
@@ -39,8 +42,15 @@ export function mockFetch(options: MockFetchOptions = {}): () => void {
   const { handlers = new Map(), customHandler, throwOnUnmatched = true } = options;
   const originalFetch = globalThis.fetch;
 
-  globalThis.fetch = async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
-    const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+  globalThis.fetch = async (
+    input: string | URL | Request,
+    init?: RequestInit,
+  ): Promise<Response> => {
+    const url = typeof input === 'string'
+      ? input
+      : input instanceof URL
+      ? input.toString()
+      : input.url;
 
     // Try custom handler first
     if (customHandler) {
@@ -71,16 +81,16 @@ export function mockFetch(options: MockFetchOptions = {}): () => void {
 
 /**
  * Create a mock fetch handler that tracks calls.
- * 
+ *
  * @example
  * ```ts
  * const { handler, calls, restore } = createMockFetchSpy();
  * globalThis.fetch = handler;
- * 
+ *
  * await fetch('/api/test');
  * assertEquals(calls.length, 1);
  * assertEquals(calls[0].url, '/api/test');
- * 
+ *
  * restore();
  * ```
  */
@@ -93,7 +103,11 @@ export function createMockFetchSpy(): {
   const originalFetch = globalThis.fetch;
 
   const handler: MockHandler = (input, init) => {
-    const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+    const url = typeof input === 'string'
+      ? input
+      : input instanceof URL
+      ? input.toString()
+      : input.url;
     calls.push({ url, init });
     return new Response('{}', { status: 200 });
   };
@@ -114,23 +128,29 @@ export async function extractRequestDetails(
   input: string | URL | Request,
   init?: RequestInit,
 ): Promise<{ url: string; method: string; headers: Headers; body?: string }> {
-  const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+  const url = typeof input === 'string'
+    ? input
+    : input instanceof URL
+    ? input.toString()
+    : input.url;
   const method = init?.method || 'GET';
   const headers = new Headers(init?.headers);
-  const body = init?.body ? await (async () => {
-    if (typeof init.body === 'string') return init.body;
-    if (init.body instanceof ReadableStream) {
-      const reader = init.body.getReader();
-      const chunks: Uint8Array[] = [];
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
+  const body = init?.body
+    ? await (async () => {
+      if (typeof init.body === 'string') return init.body;
+      if (init.body instanceof ReadableStream) {
+        const reader = init.body.getReader();
+        const chunks: Uint8Array[] = [];
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+        }
+        return new TextDecoder().decode(new Uint8Array(chunks.flatMap((c) => Array.from(c))));
       }
-      return new TextDecoder().decode(new Uint8Array(chunks.flatMap((c) => Array.from(c))));
-    }
-    return String(init.body);
-  })() : undefined;
+      return String(init.body);
+    })()
+    : undefined;
 
   return { url, method, headers, body };
 }

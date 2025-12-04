@@ -219,7 +219,8 @@ Deno.serve(async (req) => {
         time_to_first_object_ms: firstObjectTime,
         time_to_last_object_ms: objectsFound[objectsFound.length - 1].found_at_ms,
         time_saved_vs_waiting_ms: timeSaved,
-        advantage: `First result available ${timeSaved}ms earlier than waiting for complete response`,
+        advantage:
+          `First result available ${timeSaved}ms earlier than waiting for complete response`,
       };
     }
 
@@ -249,10 +250,14 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({
-        success: false,
-        error: errorDetails,
-      }, null, 2),
+      JSON.stringify(
+        {
+          success: false,
+          error: errorDetails,
+        },
+        null,
+        2,
+      ),
       { status: 500, headers: corsHeaders },
     );
   }

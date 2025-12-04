@@ -103,7 +103,7 @@ let spinnerIndex = 0;
 
 const progressInterval = setInterval(() => {
   Deno.stdout.writeSync(
-    new TextEncoder().encode(`\r${spinner[spinnerIndex]} Processing... (~${tokenEstimate} tokens)`)
+    new TextEncoder().encode(`\r${spinner[spinnerIndex]} Processing... (~${tokenEstimate} tokens)`),
   );
   spinnerIndex = (spinnerIndex + 1) % spinner.length;
 }, 100);
@@ -122,7 +122,9 @@ await latitude.prompts.run('my-prompt', {
   },
   onFinished: (result) => {
     clearInterval(progressInterval);
-    console.log(`\r✓ Complete! Actual tokens: ${result.response?.usage?.totalTokens ?? tokenEstimate}`);
+    console.log(
+      `\r✓ Complete! Actual tokens: ${result.response?.usage?.totalTokens ?? tokenEstimate}`,
+    );
   },
   onError: (error) => {
     clearInterval(progressInterval);

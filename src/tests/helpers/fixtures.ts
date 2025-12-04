@@ -1,16 +1,16 @@
 /**
  * Test fixtures for Latitude SDK tests.
- * 
+ *
  * Contains mock response data matching the Node SDK test fixtures.
  * Ported from original-node-sdk/src/test/
  */
 
 import {
+  type ChainEvent,
   ChainEventTypes,
+  type LatitudeProviderCompletedEventData,
   MessageRole,
   StreamEventTypes,
-  type ChainEvent,
-  type LatitudeProviderCompletedEventData,
 } from '../../constants/index.ts';
 
 // =============================================================================
@@ -267,7 +267,8 @@ export const CHUNK_EVENTS: ChainEvent[] = [
           content: [
             {
               type: 'text',
-              text: "Sure, let's break it down step by step to understand why 9.9 is greater than 9.11",
+              text:
+                "Sure, let's break it down step by step to understand why 9.9 is greater than 9.11",
             },
           ],
           toolCalls: [],
@@ -325,7 +326,8 @@ export const CHUNK_EVENTS: ChainEvent[] = [
           content: [
             {
               type: 'text',
-              text: "Sure, let's break it down step by step to understand why 9.9 is greater than 9.11",
+              text:
+                "Sure, let's break it down step by step to understand why 9.9 is greater than 9.11",
             },
           ],
           toolCalls: [],
@@ -358,7 +360,8 @@ export const CHUNK_EVENTS: ChainEvent[] = [
           content: [
             {
               type: 'text',
-              text: "Sure, let's break it down step by step to understand why 9.9 is greater than 9.11",
+              text:
+                "Sure, let's break it down step by step to understand why 9.9 is greater than 9.11",
             },
           ],
           toolCalls: [],
@@ -392,7 +395,7 @@ export const CHUNKS: string[] = CHUNK_EVENTS.map((event): string => {
  */
 const lastResponse: LatitudeProviderCompletedEventData = [...CHUNK_EVENTS]
   .reverse()
-  .find((e): e is ChainEvent & { data: LatitudeProviderCompletedEventData } => 
+  .find((e): e is ChainEvent & { data: LatitudeProviderCompletedEventData } =>
     e.data.type === ChainEventTypes.ProviderCompleted
   )!
   .data as LatitudeProviderCompletedEventData;

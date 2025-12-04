@@ -1,16 +1,16 @@
 /**
  * Example: Annotate Log with Evaluation
- * 
+ *
  * Demonstrates how to:
  * 1. Render a prompt with custom adapter
  * 2. Call an external LLM (OpenAI)
  * 3. Create a log entry
  * 4. Annotate the log with an evaluation score
- * 
+ *
  * Prerequisites:
  * - Create an evaluation in Latitude UI
  * - Get the evaluation UUID
- * 
+ *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 EVALUATION_UUID=xxx OPENAI_API_KEY=xxx \
  *   deno run --allow-env --allow-net examples/annotate_log.ts

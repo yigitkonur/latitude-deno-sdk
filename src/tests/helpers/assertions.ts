@@ -1,6 +1,6 @@
 /**
  * Custom assertions for Latitude SDK tests.
- * 
+ *
  * Provides specialized assertions for SSE events, streaming responses,
  * and SDK-specific patterns.
  */
@@ -10,7 +10,7 @@ import type { ChainEventDto, StreamEventTypes } from '../../constants/index.ts';
 
 /**
  * Assert that an SSE event sequence matches expected events.
- * 
+ *
  * @example
  * ```ts
  * await assertSSEEvents(response.body!, [

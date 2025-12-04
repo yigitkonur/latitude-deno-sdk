@@ -124,9 +124,7 @@ Deno.serve(async (req) => {
       results.success = true;
       results.conversation = conversation;
       results.total_duration_ms = Date.now() - start;
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
+    } // ═══════════════════════════════════════════════════════════════════════
     // ACTION: START - Start a new conversation
     // ═══════════════════════════════════════════════════════════════════════
     else if (action === 'start') {
@@ -134,7 +132,12 @@ Deno.serve(async (req) => {
       let parameters: Record<string, unknown> = {
         query: 'engineers',
         serp_results: JSON.stringify({
-          organic: [{ title: 'Test', snippet: 'LinkedIn', link: 'https://linkedin.com/in/test', position: 1 }],
+          organic: [{
+            title: 'Test',
+            snippet: 'LinkedIn',
+            link: 'https://linkedin.com/in/test',
+            position: 1,
+          }],
         }),
       };
 
@@ -162,10 +165,9 @@ Deno.serve(async (req) => {
         tokens: result?.response?.usage?.totalTokens,
       };
       results.duration_ms = Date.now() - start;
-      results.next_step = `Use ?action=continue&uuid=${result?.uuid} with POST body containing messages`;
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
+      results.next_step =
+        `Use ?action=continue&uuid=${result?.uuid} with POST body containing messages`;
+    } // ═══════════════════════════════════════════════════════════════════════
     // ACTION: CONTINUE - Continue an existing conversation
     // ═══════════════════════════════════════════════════════════════════════
     else if (action === 'continue') {
@@ -173,11 +175,16 @@ Deno.serve(async (req) => {
 
       if (!uuid) {
         return new Response(
-          JSON.stringify({
-            success: false,
-            error: 'Missing uuid parameter',
-            usage: '?action=continue&uuid=<conversation-uuid> with POST body: { "message": "your message" }',
-          }, null, 2),
+          JSON.stringify(
+            {
+              success: false,
+              error: 'Missing uuid parameter',
+              usage:
+                '?action=continue&uuid=<conversation-uuid> with POST body: { "message": "your message" }',
+            },
+            null,
+            2,
+          ),
           { status: 400, headers: corsHeaders },
         );
       }
@@ -211,7 +218,8 @@ Deno.serve(async (req) => {
       } catch (chatError) {
         results.success = false;
         results.error = chatError instanceof Error ? chatError.message : String(chatError);
-        results.note = 'Chat continuation may not be supported for all prompt types (e.g., JSON schema prompts)';
+        results.note =
+          'Chat continuation may not be supported for all prompt types (e.g., JSON schema prompts)';
       }
     }
 
@@ -234,10 +242,14 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({
-        success: false,
-        error: errorDetails,
-      }, null, 2),
+      JSON.stringify(
+        {
+          success: false,
+          error: errorDetails,
+        },
+        null,
+        2,
+      ),
       { status: 500, headers: corsHeaders },
     );
   }

@@ -1,9 +1,9 @@
 /**
  * Example: Run Prompt with Typed Tool Calling
- * 
+ *
  * Demonstrates how to use typed tools with the Latitude SDK.
  * Tools allow the AI to call functions you define during execution.
- * 
+ *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 deno run --allow-env --allow-net examples/run_with_tools.ts
  */
@@ -62,7 +62,10 @@ try {
 
   // Tool calls are tracked in the response (only for text responses)
   const textResponse = response?.response as { toolCalls?: unknown[] };
-  if (textResponse?.toolCalls && Array.isArray(textResponse.toolCalls) && textResponse.toolCalls.length > 0) {
+  if (
+    textResponse?.toolCalls && Array.isArray(textResponse.toolCalls) &&
+    textResponse.toolCalls.length > 0
+  ) {
     console.log('\n=== Tool Calls Made ===');
     for (const toolCall of textResponse.toolCalls) {
       const tc = toolCall as { name: string; arguments: Record<string, unknown> };

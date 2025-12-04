@@ -101,9 +101,7 @@ Deno.serve(async (req) => {
       if (responseObj?.object) {
         results.structured_output = responseObj.object;
       }
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
+    } // ═══════════════════════════════════════════════════════════════════════
     // MODE: STREAM - Stream response with timing
     // ═══════════════════════════════════════════════════════════════════════
     else if (mode === 'stream') {
@@ -149,9 +147,7 @@ Deno.serve(async (req) => {
           results.error = error.message;
         },
       });
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════
+    } // ═══════════════════════════════════════════════════════════════════════
     // MODE: JSON - Structured output parsing
     // ═══════════════════════════════════════════════════════════════════════
     else if (mode === 'json') {
@@ -196,11 +192,15 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({
-        success: false,
-        error: errorDetails,
-        timestamp: new Date().toISOString(),
-      }, null, 2),
+      JSON.stringify(
+        {
+          success: false,
+          error: errorDetails,
+          timestamp: new Date().toISOString(),
+        },
+        null,
+        2,
+      ),
       { status: 500, headers: corsHeaders },
     );
   }

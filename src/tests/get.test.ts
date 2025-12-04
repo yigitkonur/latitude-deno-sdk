@@ -4,7 +4,12 @@
 
 import { assertEquals, assertExists } from '@std/assert';
 import { Latitude, type LatitudeApiError } from '../index.ts';
-import { createMockErrorResponse, createMockJSONResponse, DOCUMENT_RESPONSE, mockFetch } from './helpers/mod.ts';
+import {
+  createMockErrorResponse,
+  createMockJSONResponse,
+  DOCUMENT_RESPONSE,
+  mockFetch,
+} from './helpers/mod.ts';
 
 const LATITUDE_API_KEY = 'fake-api-key';
 const PROJECT_ID = 123;

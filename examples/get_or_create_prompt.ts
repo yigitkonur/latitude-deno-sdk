@@ -1,9 +1,9 @@
 /**
  * Example: Get or Create Prompt
- * 
+ *
  * Demonstrates the getOrCreate pattern - retrieves existing prompt
  * or creates it if it doesn't exist.
- * 
+ *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 deno run --allow-env --allow-net examples/get_or_create_prompt.ts
  */

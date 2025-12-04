@@ -132,8 +132,7 @@ async function runWithRetry<T>(
       }
 
       // Retry on server errors and rate limits
-      const shouldRetry =
-        error instanceof LatitudeApiError &&
+      const shouldRetry = error instanceof LatitudeApiError &&
         (error.status >= 500 || error.status === 429);
 
       if (shouldRetry && attempt < maxRetries) {

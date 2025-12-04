@@ -1,8 +1,8 @@
 /**
  * Example: Get a Single Prompt
- * 
+ *
  * Demonstrates how to retrieve a specific prompt by path.
- * 
+ *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 deno run --allow-env --allow-net examples/get_prompt.ts
  */

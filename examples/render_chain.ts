@@ -1,13 +1,13 @@
 /**
  * Example: Render Chain with External LLM
- * 
+ *
  * Demonstrates how to use renderChain to execute multi-step prompts
  * with an external LLM provider (OpenAI).
- * 
+ *
  * Prerequisites:
  * - OpenAI API key
  * - A prompt with chain steps in Latitude
- * 
+ *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 OPENAI_API_KEY=xxx \
  *   deno run --allow-env --allow-net examples/render_chain.ts
@@ -57,7 +57,10 @@ try {
   console.log('\n=== Final Result ===');
   console.log('Config:', result.config);
   console.log('Messages:', result.messages.length);
-  console.log('\nFinal message:', JSON.stringify(result.messages[result.messages.length - 1], null, 2));
+  console.log(
+    '\nFinal message:',
+    JSON.stringify(result.messages[result.messages.length - 1], null, 2),
+  );
 } catch (error) {
   console.error('Error:', error);
 }

@@ -54,7 +54,11 @@ Deno.test('evaluations.annotate() - uses correct endpoint', async () => {
 
   const restore = mockFetch({
     customHandler: (input) => {
-      requestUrl = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+      requestUrl = typeof input === 'string'
+        ? input
+        : input instanceof URL
+        ? input.toString()
+        : input.url;
       return Promise.resolve(createMockJSONResponse(MOCK_EVALUATION_RESULT));
     },
   });
@@ -67,7 +71,9 @@ Deno.test('evaluations.annotate() - uses correct endpoint', async () => {
   }
 
   assertEquals(
-    requestUrl.includes(`/api/v3/conversations/${CONVERSATION_UUID}/evaluations/${EVALUATION_UUID}/annotate`),
+    requestUrl.includes(
+      `/api/v3/conversations/${CONVERSATION_UUID}/evaluations/${EVALUATION_UUID}/annotate`,
+    ),
     true,
   );
 });

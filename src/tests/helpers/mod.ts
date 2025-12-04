@@ -1,9 +1,9 @@
 /**
  * Test helpers for Latitude Deno SDK.
- * 
+ *
  * Provides utilities for mocking fetch, creating SSE streams,
  * and custom assertions following Deno/Supabase testing patterns.
- * 
+ *
  * @module
  */
 
@@ -18,9 +18,9 @@ export {
 
 // SSE Stream mocking
 export {
+  createMockErrorResponse,
   createMockGatewayError,
   createMockJSONResponse,
-  createMockErrorResponse,
   createMockRunEvents,
   createMockSSEStream,
   createMockStreamingResponse,
@@ -49,9 +49,4 @@ export {
 } from './assertions.ts';
 
 // Re-export common std assertions for convenience
-export {
-  assertEquals,
-  assertExists,
-  assertRejects,
-  assertThrows,
-} from '@std/assert';
+export { assertEquals, assertExists, assertRejects, assertThrows } from '@std/assert';

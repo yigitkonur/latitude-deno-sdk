@@ -1,6 +1,6 @@
 /**
  * SSE (Server-Sent Events) stream mocking utilities for Deno tests.
- * 
+ *
  * Provides factories for creating mock ReadableStream responses
  * that mimic Latitude API streaming behavior.
  */
@@ -14,14 +14,14 @@ export interface SSEEvent {
 
 /**
  * Create a mock SSE stream with proper event formatting.
- * 
+ *
  * @example
  * ```ts
  * const stream = createMockSSEStream([
  *   { event: 'latitude-event', data: { type: 'chain-started', uuid: 'test', messages: [] } },
  *   { event: 'provider-event', data: { type: 'text-delta', textDelta: 'Hello' } }
  * ]);
- * 
+ *
  * const response = new Response(stream, {
  *   headers: { 'Content-Type': 'text/event-stream' }
  * });
@@ -45,7 +45,7 @@ export function createMockSSEStream(events: SSEEvent[]): ReadableStream<Uint8Arr
 
 /**
  * Create a mock JSON response.
- * 
+ *
  * @example
  * ```ts
  * const response = createMockJSONResponse({ uuid: 'test', conversation: [] }, 200);
@@ -67,7 +67,7 @@ export function createMockJSONResponse(
 
 /**
  * Create a mock error response matching Latitude API error format.
- * 
+ *
  * @example
  * ```ts
  * const response = createMockErrorResponse('not_found_error', 'Document not found', 404);
@@ -93,7 +93,7 @@ export function createMockErrorResponse(
 
 /**
  * Create a mock streaming response with SSE events.
- * 
+ *
  * @example
  * ```ts
  * const response = createMockStreamingResponse([
@@ -114,7 +114,7 @@ export function createMockStreamingResponse(events: SSEEvent[]): Response {
 
 /**
  * Create a mock 502/504 gateway error response.
- * 
+ *
  * @example
  * ```ts
  * const response = createMockGatewayError(502);
@@ -130,7 +130,7 @@ export function createMockGatewayError(status: 502 | 504 = 502): Response {
 
 /**
  * Helper to create a complete run response with all expected events.
- * 
+ *
  * @example
  * ```ts
  * const events = createMockRunEvents({

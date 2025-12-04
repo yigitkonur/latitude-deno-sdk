@@ -1,8 +1,8 @@
 /**
  * Example: Get Versions
- * 
+ *
  * Demonstrates how to list and work with prompt versions.
- * 
+ *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 deno run --allow-env --allow-net examples/get_versions.ts
  */

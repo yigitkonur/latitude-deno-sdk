@@ -1,9 +1,9 @@
 /**
  * Example: Create Log Entry
- * 
+ *
  * Demonstrates how to manually create log entries for conversations.
  * Useful for tracking external LLM calls or custom integrations.
- * 
+ *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 deno run --allow-env --allow-net examples/create_log.ts
  */
@@ -30,7 +30,8 @@ try {
     },
   ];
 
-  const response = 'TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.';
+  const response =
+    'TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.';
 
   console.log('Creating log entry...\n');
 

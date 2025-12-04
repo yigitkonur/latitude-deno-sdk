@@ -1,12 +1,12 @@
 /**
  * Example: Pause Tool Execution for Async Processing
- * 
+ *
  * Demonstrates how to pause tool execution for long-running async operations.
  * This pattern is useful for:
  * - Background job processing
  * - External API calls with webhooks
  * - Human-in-the-loop workflows
- * 
+ *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 deno run --allow-env --allow-net examples/pause_tools.ts
  */

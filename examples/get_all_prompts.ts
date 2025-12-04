@@ -1,8 +1,8 @@
 /**
  * Example: Get All Prompts
- * 
+ *
  * Demonstrates how to list all prompts in a project.
- * 
+ *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 deno run --allow-env --allow-net examples/get_all_prompts.ts
  */
