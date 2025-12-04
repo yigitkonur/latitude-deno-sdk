@@ -1,12 +1,15 @@
 import { LatitudeApiError } from './errors.ts';
 import { makeRequest } from './request.ts';
-import { ChatOptionsWithSDKOptions, ChatSyncAPIResponse, HandlerType, ToolSpec } from './types.ts';
-import { ApiErrorCodes } from '../constants/index.ts';
-import type { ApiErrorJsonResponse } from '../constants/index.ts';
 import { waitForTools } from './streamRun.ts';
-import { AssertedStreamType } from '../constants/index.ts';
-
-import { GenerationResponse } from './types.ts';
+import {
+  ChatOptionsWithSDKOptions,
+  ChatSyncAPIResponse,
+  GenerationResponse,
+  HandlerType,
+  ToolSpec,
+} from './types.ts';
+import { ApiErrorCodes, AssertedStreamType } from '../constants/index.ts';
+import type { ApiErrorJsonResponse } from '../constants/index.ts';
 
 export async function syncChat<
   Tools extends ToolSpec,

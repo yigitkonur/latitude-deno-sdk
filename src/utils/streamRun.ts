@@ -1,7 +1,13 @@
 import { LatitudeApiError } from './errors.ts';
 import { handleStream } from './handleStream.ts';
 import { makeRequest } from './request.ts';
-import { HandlerType, RunPromptOptions, SDKOptions, ToolSpec } from './types.ts';
+import {
+  GenerationResponse,
+  HandlerType,
+  RunPromptOptions,
+  SDKOptions,
+  ToolSpec,
+} from './types.ts';
 import {
   ApiErrorCodes,
   AssertedStreamType,
@@ -9,8 +15,6 @@ import {
   ProviderData,
 } from '../constants/index.ts';
 import type { ApiErrorJsonResponse } from '../constants/index.ts';
-
-import { GenerationResponse } from './types.ts';
 
 export async function streamRun<
   Tools extends ToolSpec,

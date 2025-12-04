@@ -1,2 +1,2 @@
-// SDK Version - hardcoded for Deno (no build-time replacement needed)
-export const SDK_VERSION = '5.2.2';
+/** SDK version matching package.json/deno.json version. */
+export const SDK_VERSION: string = '1.0.3';
