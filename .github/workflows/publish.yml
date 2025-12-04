@@ -7,8 +7,13 @@
 # 1. Link your package to this GitHub repository at:
 #    https://jsr.io/@yigitkonur/latitude-deno-sdk/settings
 #
+# Versioning:
+# - Bump version in deno.json before pushing to main
+# - Or use: deno task version:patch / version:minor / version:major
+# - JSR auto-skips if version already published (idempotent)
+#
 # Triggers:
-# - Push to main branch (auto-publish if version changed)
+# - Push to main branch (auto-publish if version is new)
 # - Version tags (v*)
 # - Manual workflow dispatch
 
@@ -39,14 +44,48 @@ jobs:
         with:
           deno-version: v2.x
 
+      - name: Get package info
+        id: pkg
+        run: |
+          VERSION=$(deno eval "console.log(JSON.parse(Deno.readTextFileSync('deno.json')).version)")
+          NAME=$(deno eval "console.log(JSON.parse(Deno.readTextFileSync('deno.json')).name)")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+          echo "📦 Package: $NAME@$VERSION"
+
+      - name: Check if version exists on JSR
+        id: check
+        run: |
+          PKG="${{ steps.pkg.outputs.name }}"
+          VER="${{ steps.pkg.outputs.version }}"
+          # Try to fetch the version metadata from JSR
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://jsr.io/${PKG}/${VER}_meta.json")
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "⏭️ Version $VER already published, skipping..."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "🆕 Version $VER is new, will publish"
+          fi
+
       - name: Verify types
+        if: steps.check.outputs.exists == 'false'
         run: deno task check
 
       - name: Lint
+        if: steps.check.outputs.exists == 'false'
         run: deno lint src/
 
       - name: Format check
+        if: steps.check.outputs.exists == 'false'
         run: deno fmt --check src/
 
       - name: Publish to JSR
-        run: deno publish
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          echo "🚀 Publishing ${{ steps.pkg.outputs.name }}@${{ steps.pkg.outputs.version }}"
+          deno publish
+
+      - name: Skip notification
+        if: steps.check.outputs.exists == 'true'
+        run: echo "✅ Version ${{ steps.pkg.outputs.version }} already on JSR - no action needed"

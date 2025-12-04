@@ -22,6 +22,9 @@
   "tasks": {
     "check": "deno check src/mod.ts",
     "test": "deno test --allow-net --allow-env src/tests/",
+    "version:patch": "deno run -A jsr:@deno/semver-bump patch deno.json && git add deno.json && git commit -m \"chore: bump version\"",
+    "version:minor": "deno run -A jsr:@deno/semver-bump minor deno.json && git add deno.json && git commit -m \"chore: bump version\"",
+    "version:major": "deno run -A jsr:@deno/semver-bump major deno.json && git add deno.json && git commit -m \"chore: bump version\"",
     "fmt": "deno fmt src/",
     "lint": "deno lint src/"
   },
