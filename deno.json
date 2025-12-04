@@ -1,10 +1,9 @@
 {
   "name": "@yigitkonur/latitude-deno-sdk",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Latitude Deno SDK - Community fork of the official Node.js SDK, rebuilt for Deno and Supabase Edge Functions",
   "license": "MIT",
   "exports": "./src/mod.ts",
-
   "imports": {
     "eventsource-parser": "npm:eventsource-parser@^2.0.1",
     "eventsource-parser/stream": "npm:eventsource-parser@^2.0.1/stream",
@@ -13,13 +12,14 @@
     "@std/assert": "jsr:@std/assert@^1.0.0",
     "@std/semver": "jsr:@std/semver@^1.0.3"
   },
-
   "compilerOptions": {
     "strict": true,
-    "lib": ["deno.window", "esnext"],
+    "lib": [
+      "deno.window",
+      "esnext"
+    ],
     "isolatedDeclarations": true
   },
-
   "tasks": {
     "check": "deno check src/mod.ts",
     "test": "deno test --allow-net --allow-env src/tests/",
@@ -29,7 +29,6 @@
     "fmt": "deno fmt src/",
     "lint": "deno lint src/"
   },
-
   "fmt": {
     "useTabs": false,
     "lineWidth": 100,
@@ -37,7 +36,6 @@
     "singleQuote": true,
     "proseWrap": "preserve"
   },
-
   "lint": {
     "rules": {
       "exclude": [
@@ -48,9 +46,15 @@
       ]
     }
   },
-
   "publish": {
-    "include": ["src/", "README.md", "LICENSE.md", "CHANGELOG.md"],
-    "exclude": ["src/tests/"]
+    "include": [
+      "src/",
+      "README.md",
+      "LICENSE.md",
+      "CHANGELOG.md"
+    ],
+    "exclude": [
+      "src/tests/"
+    ]
   }
 }
