@@ -5,26 +5,40 @@ type SdkEnv = {
 };
 
 function generateEnv(): SdkEnv {
-  // Detect production environment:
-  // 1. DENO_ENV or NODE_ENV set to 'production'
-  // 2. Running in Supabase Edge Functions (SUPABASE_URL is set)
-  // 3. Running in Deno Deploy (DENO_DEPLOYMENT_ID is set)
-  const isSupabase = !!Deno.env.get('SUPABASE_URL');
-  const isDenoDeploy = !!Deno.env.get('DENO_DEPLOYMENT_ID');
-  const isExplicitProd = Deno.env.get('DENO_ENV') === 'production' ||
-    Deno.env.get('NODE_ENV') === 'production';
+  // Detect development environment (EXPLICIT opt-in only):
+  // - DENO_ENV or NODE_ENV explicitly set to 'development' or 'local'
+  // - GATEWAY_HOSTNAME explicitly set to 'localhost'
+  const explicitLocalhost = Deno.env.get("GATEWAY_HOSTNAME") === "localhost";
+  const isExplicitDev = Deno.env.get("DENO_ENV") === "development" ||
+    Deno.env.get("DENO_ENV") === "local" ||
+    Deno.env.get("NODE_ENV") === "development" ||
+    Deno.env.get("NODE_ENV") === "local";
 
-  // Default to production if in any cloud runtime or explicitly set
-  const isProd = isExplicitProd || isSupabase || isDenoDeploy;
+  // SAFE DEFAULT: Production (gateway.latitude.so)
+  // Only use localhost if explicitly requested via env vars
+  const isDev = isExplicitDev || explicitLocalhost;
 
-  const defaultHostname = isProd ? 'gateway.latitude.so' : 'localhost';
-  const defaultPort = !isProd ? 8787 : undefined;
-  const defaultSsl = isProd ? true : false;
+  const defaultHostname = isDev ? "localhost" : "gateway.latitude.so";
+  const defaultPort = isDev ? 8787 : undefined;
+  const defaultSsl = !isDev;
+
+  // Parse GATEWAY_PORT safely (NaN becomes undefined)
+  const portEnv = Deno.env.get("GATEWAY_PORT");
+  const parsedPort = portEnv ? Number(portEnv) : defaultPort;
+  const finalPort = parsedPort && !Number.isNaN(parsedPort)
+    ? parsedPort
+    : undefined;
+
+  // Parse GATEWAY_SSL (explicit 'false' disables, otherwise follow default)
+  const sslEnv = Deno.env.get("GATEWAY_SSL");
+  const finalSsl = sslEnv === "false"
+    ? false
+    : (sslEnv === "true" ? true : defaultSsl);
 
   return {
-    GATEWAY_HOSTNAME: Deno.env.get('GATEWAY_HOSTNAME') ?? defaultHostname,
-    GATEWAY_PORT: Number(Deno.env.get('GATEWAY_PORT') ?? defaultPort),
-    GATEWAY_SSL: Deno.env.get('GATEWAY_SSL') === 'true' || defaultSsl,
+    GATEWAY_HOSTNAME: Deno.env.get("GATEWAY_HOSTNAME") ?? defaultHostname,
+    GATEWAY_PORT: finalPort,
+    GATEWAY_SSL: finalSsl,
   };
 }
 

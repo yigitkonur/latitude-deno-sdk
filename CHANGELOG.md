@@ -2,6 +2,28 @@
 
 Latitude Deno SDK - Community fork of [@latitude-data/sdk](https://www.npmjs.com/package/@latitude-data/sdk).
 
+## [1.0.9] - 2025-12-08
+
+### Fixed
+
+- **CRITICAL: Default to production gateway** - SDK now defaults to `gateway.latitude.so` instead of `localhost:8787`
+  - Previous behavior: Required `SUPABASE_URL`, `DENO_DEPLOYMENT_ID`, or `NODE_ENV=production` to use production gateway
+  - New behavior: Uses production gateway by default. Set `DENO_ENV=development` or `GATEWAY_HOSTNAME=localhost` for local development
+  - This is a **safer default** - most users want to hit the real API
+
+- **Fixed NaN port parsing** - `GATEWAY_PORT` env var now properly handles invalid values instead of becoming `NaN`
+
+- **Fixed SSL parsing** - `GATEWAY_SSL=false` now correctly disables SSL (previously only `true` worked)
+
+### Breaking Change
+
+If you were relying on the SDK defaulting to localhost in local development, you now need to explicitly set:
+```bash
+export DENO_ENV=development
+# or
+export GATEWAY_HOSTNAME=localhost
+```
+
 ## [1.0.2] - 2025-12-04
 
 ### Documentation
