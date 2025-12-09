@@ -44,7 +44,6 @@ export type { RunSyncAPIResponse };
 import type { Config, Message, ToolCall } from '../constants/index.ts';
 import type { AdapterMessageType, Message as PromptlMessage, ProviderAdapter } from 'promptl-ai';
 
-
 /** URL parameters for listing all documents in a project. */
 export type GetAllDocumentsParams = {
   /** The project ID to list documents from. */
