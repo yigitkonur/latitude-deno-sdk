@@ -5,22 +5,9 @@ type SdkEnv = {
 };
 
 function generateEnv(): SdkEnv {
-  // Detect development environment (EXPLICIT opt-in only):
-  // - DENO_ENV or NODE_ENV explicitly set to 'development' or 'local'
-  // - GATEWAY_HOSTNAME explicitly set to 'localhost'
-  const explicitLocalhost = Deno.env.get("GATEWAY_HOSTNAME") === "localhost";
-  const isExplicitDev = Deno.env.get("DENO_ENV") === "development" ||
-    Deno.env.get("DENO_ENV") === "local" ||
-    Deno.env.get("NODE_ENV") === "development" ||
-    Deno.env.get("NODE_ENV") === "local";
-
-  // SAFE DEFAULT: Production (gateway.latitude.so)
-  // Only use localhost if explicitly requested via env vars
-  const isDev = isExplicitDev || explicitLocalhost;
-
-  const defaultHostname = isDev ? "localhost" : "gateway.latitude.so";
-  const defaultPort = isDev ? 8787 : undefined;
-  const defaultSsl = !isDev;
+  const defaultHostname = "gateway.latitude.so";
+  const defaultPort = undefined;
+  const defaultSsl = true;
 
   // Parse GATEWAY_PORT safely (NaN becomes undefined)
   const portEnv = Deno.env.get("GATEWAY_PORT");

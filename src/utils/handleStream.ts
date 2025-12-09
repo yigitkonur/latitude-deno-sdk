@@ -109,10 +109,10 @@ export async function handleStream<S extends AssertedStreamType = 'text'>({
     try {
       reader.releaseLock();
     } catch (e) {
-      // Ignore errors during cleanup
-      // Silently ignore errors during cleanup - this is expected behavior
-      // when the stream is already released or in an invalid state
-      void (e instanceof Error ? e.message : String(e));
+      console.warn(
+        'Error releasing stream reader lock:',
+        e instanceof Error ? e.message : String(e),
+      );
     }
   }
 }

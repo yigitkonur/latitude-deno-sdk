@@ -156,6 +156,17 @@ export enum ApiErrorCodes {
 /** Union type of all possible API response error codes. */
 export type ApiResponseCode = RunErrorCodes | ApiErrorCodes | LatitudeErrorCodes;
 
+/**
+ * Types of parameters that can be passed to prompts.
+ *
+ * @enum {string}
+ */
+export enum ParameterType {
+  Text = 'text',
+  Image = 'image',
+  File = 'file',
+}
+
 /** Reference to a database entity related to an error. */
 export type DbErrorRef = {
   /** UUID of the related entity. */

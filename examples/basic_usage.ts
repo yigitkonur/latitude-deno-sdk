@@ -1,6 +1,5 @@
 /**
  * Basic usage example for Latitude Deno SDK.
- * Demonstrates simple prompt execution and response handling.
  *
  * Run with:
  * LATITUDE_API_KEY=xxx LATITUDE_PROJECT_ID=123 deno run --allow-env --allow-net examples/basic_usage.ts
@@ -15,10 +14,8 @@ const latitude = new Latitude(Deno.env.get('LATITUDE_API_KEY')!, {
 
 console.log('=== Latitude SDK Basic Usage ===\n');
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 1. List available prompts
-// ─────────────────────────────────────────────────────────────────────────────
-console.log('1. Listing available prompts...\n');
+// List available prompts
+console.log('Fetching prompts...\n');
 
 const prompts = await latitude.prompts.getAll();
 console.log(`Found ${prompts.length} prompts:`);
@@ -32,19 +29,15 @@ if (prompts.length > 5) {
   console.log(`  ... and ${prompts.length - 5} more`);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 2. Run a prompt (sync mode)
-// ─────────────────────────────────────────────────────────────────────────────
-console.log('\n2. Running a prompt (sync mode)...\n');
+// Run a prompt (sync mode)
+console.log('\nRunning a prompt...\n');
 
-// Use the first available prompt or specify your own
 const promptPath = prompts[0]?.path || 'my-prompt';
 
 try {
   const result = await latitude.prompts.run(promptPath, {
     stream: false,
     parameters: {
-      // Add your prompt parameters here
       input: 'Hello, World!',
     },
   });
@@ -52,10 +45,10 @@ try {
   if (result?.response) {
     console.log('Response received:');
     console.log(`  Text: ${result.response.text?.substring(0, 200)}...`);
-    console.log(`  Tokens used: ${result.response.usage?.totalTokens ?? 'N/A'}`);
-    console.log(`  Conversation UUID: ${result.uuid}`);
+    console.log(`  Tokens: ${result.response.usage?.totalTokens ?? 'N/A'}`);
+    console.log(`  UUID: ${result.uuid}`);
 
-    // If the prompt returns structured JSON (check if object response)
+    // Check for structured output
     const objectResponse = result.response as { object?: unknown };
     if (objectResponse.object) {
       console.log('  Structured output:', JSON.stringify(objectResponse.object, null, 2));
@@ -65,26 +58,8 @@ try {
   console.error('Failed to run prompt:', error);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 3. Get prompt details
-// ─────────────────────────────────────────────────────────────────────────────
-console.log('\n3. Getting prompt details...\n');
-
-try {
-  const prompt = await latitude.prompts.get(promptPath);
-  console.log(`Prompt: ${prompt.path}`);
-  console.log(`  Provider: ${prompt.config?.provider ?? 'default'}`);
-  console.log(`  Model: ${prompt.config?.model ?? 'default'}`);
-  console.log(`  Has schema: ${!!prompt.config?.schema}`);
-  console.log(`  Content preview: ${prompt.content?.substring(0, 100)}...`);
-} catch (error) {
-  console.error('Failed to get prompt:', error);
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 4. List projects
-// ─────────────────────────────────────────────────────────────────────────────
-console.log('\n4. Listing projects...\n');
+// List projects
+console.log('\nFetching projects...\n');
 
 try {
   const projects = await latitude.projects.getAll();
