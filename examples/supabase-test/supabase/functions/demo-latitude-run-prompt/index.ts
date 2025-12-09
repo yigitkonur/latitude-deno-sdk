@@ -12,7 +12,7 @@
  * Test: curl "https://your-project.supabase.co/functions/v1/demo-latitude-run-prompt"
  */
 
-import { Latitude, LatitudeApiError } from 'jsr:@yigitkonur/latitude-deno-sdk@1.0.10';
+import { Latitude, LatitudeApiError } from 'jsr:@yigitkonur/latitude-deno-sdk';
 
 const LATITUDE_API_KEY = Deno.env.get('LATITUDE_API_KEY')!;
 const LATITUDE_PROJECT_ID = Number(Deno.env.get('LATITUDE_PROJECT_ID'))!;
@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
 
   try {
     // Get prompt path from request or use default
-    let promptPath = 'extract-linkedin-from-serp';
+    let promptPath = 'linkedin-search';
     let parameters: Record<string, unknown> = {
       query: 'test engineer',
       serp_results: JSON.stringify({
