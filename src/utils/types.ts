@@ -25,12 +25,16 @@ import type { LatitudeApiError } from './errors.ts';
 import type {
   AssertedStreamType,
   ChainCallResponseDto,
+  ChainEvent,
   ChainEventDto,
   ChatSyncAPIResponse,
   Providers,
   RunSyncAPIResponse,
   StreamEventTypes,
 } from '../constants/index.ts';
+import { ChainEventTypes, ParameterType } from '../constants/index.ts';
+export { ChainEventTypes, ParameterType };
+export type { ChainEvent, StreamEventTypes };
 
 /** Re-exported synchronous chat API response type for backwards compatibility. */
 export type { ChatSyncAPIResponse };
@@ -40,46 +44,6 @@ export type { RunSyncAPIResponse };
 import type { Config, Message, ToolCall } from '../constants/index.ts';
 import type { AdapterMessageType, Message as PromptlMessage, ProviderAdapter } from 'promptl-ai';
 
-/**
- * Chain event wrapper containing event data and type.
- * Re-exported for backwards compatibility with legacy constants.
- */
-export type ChainEvent = {
-  /** The event payload data. */
-  data: unknown;
-  /** The stream event type. */
-  event: StreamEventTypes;
-};
-
-/**
- * Types of events that can occur during chain execution.
- *
- * @enum {string}
- */
-export enum ChainEventTypes {
-  /** An error occurred during chain execution. */
-  Error = 'chain-error',
-  /** A new step in the chain has started. */
-  Step = 'chain-step',
-  /** The chain has completed execution. */
-  Complete = 'chain-complete',
-  /** A step in the chain has completed. */
-  StepComplete = 'chain-step-complete',
-}
-
-/**
- * Types of parameters that can be passed to prompts.
- *
- * @enum {string}
- */
-export enum ParameterType {
-  /** Plain text parameter. */
-  Text = 'text',
-  /** Image parameter (base64 or URL). */
-  Image = 'image',
-  /** File parameter. */
-  File = 'file',
-}
 
 /** URL parameters for listing all documents in a project. */
 export type GetAllDocumentsParams = {
