@@ -190,6 +190,66 @@ export type ApiErrorJsonResponse = {
 };
 
 // ============================================================================
+// TOOL SOURCE TYPES
+// ============================================================================
+
+export enum ToolSource {
+  Client = 'client',
+  Latitude = 'latitude',
+  Agent = 'agentAsTool',
+  Integration = 'integration',
+  ProviderTool = 'providerTool',
+}
+
+type BaseToolSourceData<T extends ToolSource> = {
+  simulated?: boolean;
+  source: T;
+};
+
+type ClientToolSourceData = BaseToolSourceData<ToolSource.Client>;
+
+type LatitudeToolSourceData = BaseToolSourceData<ToolSource.Latitude> & {
+  latitudeTool: string;
+};
+
+type AgentAsToolSourceData = BaseToolSourceData<ToolSource.Agent> & {
+  agentPath: string;
+  documentUuid: string;
+  documentLogUuid?: string;
+};
+
+type IntegrationToolSourceData = BaseToolSourceData<ToolSource.Integration> & {
+  integrationId: number;
+  toolLabel?: string;
+  imageUrl?: string;
+};
+
+type ProviderToolSourceData = BaseToolSourceData<ToolSource.ProviderTool> & {
+  provider: Providers;
+  tool: unknown;
+};
+
+export type ToolSourceData<T extends ToolSource = ToolSource> =
+  T extends ToolSource.Client ? ClientToolSourceData :
+  T extends ToolSource.Latitude ? LatitudeToolSourceData :
+  T extends ToolSource.Agent ? AgentAsToolSourceData :
+  T extends ToolSource.Integration ? IntegrationToolSourceData :
+  T extends ToolSource.ProviderTool ? ProviderToolSourceData :
+  never;
+
+// ============================================================================
+// LEGACY VERCEL SDK TYPES
+// ============================================================================
+
+export type LegacyVercelSDKToolResultPart = {
+  type: 'tool-result';
+  toolCallId: string;
+  toolName: string;
+  result: string | unknown;
+  isError?: boolean;
+};
+
+// ============================================================================
 // LEGACY COMPILER TYPES (Messages, Roles, etc.)
 // ============================================================================
 
@@ -268,6 +328,7 @@ export type ToolRequestContent = {
   toolCallId: string;
   toolName: string;
   args: Record<string, unknown>;
+  _sourceData?: ToolSourceData;
 };
 
 export type MessageContent =
@@ -303,7 +364,7 @@ export type AssistantMessage = {
 
 export type ToolMessage = {
   role: MessageRole.tool;
-  content: (TextContent | ToolContent)[];
+  content: (TextContent | ToolContent | LegacyVercelSDKToolResultPart)[];
   [key: string]: unknown;
 };
 
@@ -311,6 +372,7 @@ export type ToolCall = {
   id: string;
   name: string;
   arguments: Record<string, unknown>;
+  _sourceData?: ToolSourceData;
 };
 
 /**
