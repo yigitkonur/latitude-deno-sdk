@@ -12,14 +12,13 @@
  */
 
 import { Latitude } from '../src/mod.ts';
-import { MessageRole } from '../src/constants/index.ts';
 
 // Define tool types
 type Tools = {
-  generate_travel_itinerary: {
+  'generate_travel_itinerary': {
     location: string;
-    start_date: string;
-    end_date: string;
+    'start_date': string;
+    'end_date': string;
     preferences: string;
   };
 };
@@ -27,8 +26,8 @@ type Tools = {
 type ItineraryRequest = {
   data: {
     location: string;
-    start_date: string;
-    end_date: string;
+    'start_date': string;
+    'end_date': string;
     preferences: string;
   };
   toolId: string;
@@ -48,8 +47,8 @@ function processItinerary(request: ItineraryRequest): Record<string, unknown> {
   console.log('[Job Queue] Processing itinerary...');
   return {
     location: request.data.location,
-    start_date: request.data.start_date,
-    end_date: request.data.end_date,
+    'start_date': request.data['start_date'],
+    'end_date': request.data['end_date'],
     preferences: request.data.preferences,
     recommendations: [
       'Visit the Sagrada Familia',
@@ -76,12 +75,12 @@ try {
   await latitude.prompts.run<Tools>('travel-assistant', {
     parameters: {
       destination: 'Barcelona',
-      start_date: '2025-06-02',
-      end_date: '2025-06-10',
+      'start_date': '2025-06-02',
+      'end_date': '2025-06-10',
       preferences: 'museums, parks, and local cuisine',
     },
     tools: {
-      generate_travel_itinerary: async (data, details) => {
+      'generate_travel_itinerary': async (data, details) => {
         const typedData = data as Tools['generate_travel_itinerary'];
         console.log(`[Tool Called] generate_travel_itinerary for ${typedData.location}`);
 
@@ -99,7 +98,7 @@ try {
 
         // Return a placeholder - in real usage with pause support,
         // the execution would pause here
-        return { status: 'processing', message: 'Itinerary generation started' };
+        return await Promise.resolve({ status: 'processing', message: 'Itinerary generation started' });
       },
     },
   });

@@ -19,7 +19,7 @@ import { Latitude } from '../src/mod.ts';
 
 // Define tool types
 type Tools = {
-  get_answer: { question: string };
+  'get_answer': { question: string };
 };
 
 const latitude = new Latitude(Deno.env.get('LATITUDE_API_KEY')!, {
@@ -51,7 +51,7 @@ try {
   const result = await latitude.prompts.run<Tools>('rag-assistant', {
     parameters: { question },
     tools: {
-      get_answer: async ({ question: q }) => {
+      'get_answer': async ({ question: q }) => {
         console.log(`[Tool Called] get_answer("${q}")`);
 
         // In a real implementation:
@@ -76,7 +76,7 @@ try {
         console.log(`[RAG] Found match (score: ${bestMatch.score})`);
         console.log(`[RAG] Context: ${bestMatch.text}\n`);
 
-        return bestMatch.text;
+        return await Promise.resolve(bestMatch.text);
       },
     },
   });

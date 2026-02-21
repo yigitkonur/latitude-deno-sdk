@@ -12,8 +12,8 @@ import { Latitude } from '../src/mod.ts';
 
 // Define your tool types for type safety
 type Tools = {
-  get_weather: { location: string };
-  get_time: { timezone?: string };
+  'get_weather': { location: string };
+  'get_time': { timezone?: string };
 };
 
 // Initialize client
@@ -31,26 +31,26 @@ try {
     },
     tools: {
       // Tool handler for weather lookup
-      get_weather: async ({ location }) => {
+      'get_weather': async ({ location }) => {
         console.log(`[Tool Called] get_weather(location="${location}")`);
         // In a real app, you'd call a weather API here
-        return {
+        return await Promise.resolve({
           location,
           temperature: '2°C',
           conditions: 'Cloudy',
           humidity: '65%',
-        };
+        });
       },
 
       // Tool handler for time lookup
-      get_time: async ({ timezone = 'UTC' }) => {
+      'get_time': async ({ timezone = 'UTC' }) => {
         console.log(`[Tool Called] get_time(timezone="${timezone}")`);
         const now = new Date();
-        return {
+        return await Promise.resolve({
           timezone,
           time: now.toLocaleTimeString('en-US', { timeZone: timezone }),
           timestamp: now.toISOString(),
-        };
+        });
       },
     },
   });

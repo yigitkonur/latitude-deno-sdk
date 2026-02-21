@@ -206,7 +206,7 @@ await latitude.prompts.run('my-prompt', {
         const partial = parser2.getPartial();
         if (partial.length > 10) {
           // Show we're parsing something
-          process.stdout.write('.');
+          Deno.stdout.writeSync(new TextEncoder().encode('.'));
         }
       }
     }

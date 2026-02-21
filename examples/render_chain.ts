@@ -50,7 +50,7 @@ try {
       // return response.choices[0].message;
 
       // Simulated response - return string or message object
-      return 'The meaning of life is a philosophical question...';
+      return await Promise.resolve('The meaning of life is a philosophical question...');
     },
   });
 
