@@ -5,7 +5,7 @@
 #
 # Prerequisites:
 # 1. Link your package to this GitHub repository at:
-#    https://jsr.io/@yigitkonur/latitude-deno-sdk/settings
+#    https://jsr.io/@yigitkonur/sdk-deno-latitude/settings
 #
 # Versioning:
 # - Bump version in deno.json before pushing to main

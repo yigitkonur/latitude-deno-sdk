@@ -110,7 +110,7 @@ type Options = {
  *
  * @example Basic usage
  * ```ts
- * import { Latitude } from "@yigitkonur/latitude-deno-sdk";
+ * import { Latitude } from "@yigitkonur/sdk-deno-latitude";
  *
  * const client = new Latitude("your-api-key", {
  *   projectId: 123,

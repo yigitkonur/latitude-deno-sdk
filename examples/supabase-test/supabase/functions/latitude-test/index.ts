@@ -2,7 +2,7 @@
  * Latitude Deno SDK - Comprehensive Test Suite
  * Tests ALL SDK functionality with advanced streaming examples
  */
-import { Latitude, MessageRole } from 'jsr:@yigitkonur/latitude-deno-sdk@1.0.7';
+import { Latitude, MessageRole } from 'jsr:@yigitkonur/sdk-deno-latitude@1.0.7';
 
 // Set these environment variables or replace with your credentials
 const LATITUDE_API_KEY = Deno.env.get('LATITUDE_API_KEY') || 'your-api-key-here';

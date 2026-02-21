@@ -7,13 +7,13 @@
  * ## Installation
  *
  * ```ts
- * import { Latitude } from "jsr:@yigitkonur/latitude-deno-sdk";
+ * import { Latitude } from "jsr:@yigitkonur/sdk-deno-latitude";
  * ```
  *
  * ## Quick Start
  *
  * ```ts
- * import { Latitude } from "jsr:@yigitkonur/latitude-deno-sdk";
+ * import { Latitude } from "jsr:@yigitkonur/sdk-deno-latitude";
  *
  * // Initialize the client
  * const client = new Latitude("your-api-key", {

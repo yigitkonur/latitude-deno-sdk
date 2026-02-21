@@ -1,13 +1,13 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@yigitkonur/latitude-deno-sdk@1.0.0": "1.0.0",
+    "jsr:@yigitkonur/sdk-deno-latitude@1.0.0": "1.0.0",
     "npm:eventsource-parser@^2.0.1": "2.0.1",
     "npm:promptl-ai@~0.9.4": "0.9.4_zod@4.1.12",
     "npm:zod@^3.23.0": "3.25.76"
   },
   "jsr": {
-    "@yigitkonur/latitude-deno-sdk@1.0.0": {
+    "@yigitkonur/sdk-deno-latitude@1.0.0": {
       "integrity": "2a0a6155cec04fc86cdc4c866a837675ab45d40924f0f33c8e6ca2f9f3795106",
       "dependencies": [
         "npm:eventsource-parser",

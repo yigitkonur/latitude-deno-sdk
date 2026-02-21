@@ -69,7 +69,7 @@ export const HEAD_COMMIT: string = 'live';
  *
  * @example
  * ```ts
- * import { Providers } from "@yigitkonur/latitude-deno-sdk";
+ * import { Providers } from "@yigitkonur/sdk-deno-latitude";
  *
  * const prompt = await client.prompts.get("my-prompt");
  * if (prompt.provider === Providers.OpenAI) {
@@ -260,7 +260,7 @@ export type LegacyVercelSDKToolResultPart = {
  *
  * @example
  * ```ts
- * import { MessageRole } from "@yigitkonur/latitude-deno-sdk";
+ * import { MessageRole } from "@yigitkonur/sdk-deno-latitude";
  *
  * const message = {
  *   role: MessageRole.user,

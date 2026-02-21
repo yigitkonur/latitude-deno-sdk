@@ -11,7 +11,7 @@
  * Test: curl "https://your-project.supabase.co/functions/v1/demo-latitude-chat"
  */
 
-import { Latitude, LatitudeApiError } from 'jsr:@yigitkonur/latitude-deno-sdk@1.0.6';
+import { Latitude, LatitudeApiError } from 'jsr:@yigitkonur/sdk-deno-latitude@1.0.6';
 
 const LATITUDE_API_KEY = Deno.env.get('LATITUDE_API_KEY')!;
 const LATITUDE_PROJECT_ID = Number(Deno.env.get('LATITUDE_PROJECT_ID'))!;
