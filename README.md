@@ -1,14 +1,14 @@
 community-maintained Deno port of the official Latitude SDK. run, stream, and manage AI prompts on the [Latitude](https://latitude.so) platform from Deno, Supabase Edge Functions, and Deno Deploy — no Node.js polyfills needed.
 
 ```typescript
-import { Latitude } from "jsr:@yigitkonur/latitude-deno-sdk";
+import { Latitude } from "jsr:@yigitkonur/sdk-deno-latitude";
 
 const sdk = new Latitude("your-api-key", { projectId: 123 });
 const result = await sdk.prompts.run("my-prompt", { stream: false });
 console.log(result.response);
 ```
 
-[![JSR](https://jsr.io/badges/@yigitkonur/latitude-deno-sdk)](https://jsr.io/@yigitkonur/latitude-deno-sdk)
+[![JSR](https://jsr.io/badges/@yigitkonur/sdk-deno-latitude)](https://jsr.io/@yigitkonur/sdk-deno-latitude)
 [![deno](https://img.shields.io/badge/deno-2.x-93450a.svg?style=flat-square)](https://deno.land/)
 [![license](https://img.shields.io/badge/license-MIT-grey.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
@@ -36,7 +36,7 @@ the official `@latitude-data/sdk` depends on `node-fetch`, `process.env`, and No
 ## install
 
 ```typescript
-import { Latitude } from "jsr:@yigitkonur/latitude-deno-sdk";
+import { Latitude } from "jsr:@yigitkonur/sdk-deno-latitude";
 ```
 
 no install step. Deno pulls from JSR on first import.
@@ -112,7 +112,7 @@ const result = await sdk.runs.attach(job.uuid, { stream: false });
 ### local rendering (no API call)
 
 ```typescript
-import { Adapters } from "jsr:@yigitkonur/latitude-deno-sdk";
+import { Adapters } from "jsr:@yigitkonur/sdk-deno-latitude";
 
 const { config, messages } = await sdk.prompts.render({
   prompt: { content: "---\nmodel: gpt-4o\n---\nhello {{ name }}" },
@@ -134,7 +134,7 @@ await sdk.logs.create("my-prompt", [
 ### supabase edge function
 
 ```typescript
-import { Latitude } from "jsr:@yigitkonur/latitude-deno-sdk";
+import { Latitude } from "jsr:@yigitkonur/sdk-deno-latitude";
 
 Deno.serve(async (req) => {
   const sdk = new Latitude(Deno.env.get("LATITUDE_API_KEY")!, {
